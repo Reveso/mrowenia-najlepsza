@@ -15,14 +15,14 @@ public class CustomBehaviorCore {
             (ant->kierunek) += 3;
         (ant->kierunek) %= 4;
     }
-    void antSetPlaneValue(Ant ant) {
+    public void antSetPlaneValue(Ant ant) {
         /**
          * Jeśli iteracja wartosci na planszy nie równa się wartości zmiennej behaviourLimit, wtedy iterujemy
          */
-        if((plane[ant->x][ant->y] + 1) == behaviourLimit) {
-            plane[ant->x][ant->y] = 0;
+        if((plane[ant.x][ant.y] + 1) == behaviourLimit) {
+            plane[ant.x][ant.y] = 0;
         } else {
-            plane[ant->x][ant->y] = plane[ant->x][ant->y] + 1;
+            plane[ant.x][ant.y] = plane[ant.x][ant.y] + 1;
         }
     }
     void antStep(Ant ant, ColorList *colorList, int planeSize, SDL_Renderer *renderer, SDL_Rect r, int antSize) {
