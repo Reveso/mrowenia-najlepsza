@@ -17,7 +17,7 @@ public class BasicAntCore {
     }
 
     public void multiAntSetDirection(Ant ant) {
-        int nextDirection = plane[ant->x][ant->y];
+        int nextDirection = plane[ant.x][ant.y];
         if (nextDirection == -1) //bialy - w prawo
             (ant.kerunek)++;
         else    //czorny - w lewo
@@ -44,7 +44,7 @@ public class BasicAntCore {
         boolean anyMove = false;
 
         while (iterator.hasNext()) {
-            Ant tempAnt= (Ant)iterator.next();
+            Ant tempAnt = (Ant)iterator.next();
             if(isCrashed(tempAnt, planeSize))
 //                tempAnt.isActive = false;
                 list.remove(tempAnt);
@@ -65,12 +65,12 @@ public class BasicAntCore {
     public void setStartingLocations() {
         int startX;
         int startY;
-        Scanner scanner= new Scanner();
+//        Scanner scanner= new Scanner();
 //        for(int i=1; l!= null; i++) {
 //            System.out.println();("\nPodaj poczatkowe wspolrzedne mrowki nr %d:\n", i);
 //            scanf("%d", &startX);
 //            scanf("%d", &startY);
-
+//alternatywe poprosze szmato
             setAntPosition(l->ant, startX, startY);
             l->ant->id = i-1;
             l->ant->kierunek = 1;
