@@ -43,10 +43,21 @@ public class BasicAntCore {
     public boolean iterateThroughAntList(AntList *l, ColorList *colorList, int planeSize,SDL_Renderer *renderer, SDL_Rect r, int antSize) {
         boolean anyMove = false;
 
-        for(Ant ant: antList) {
-            if(ant.isActive){
-                multiAntStep(ant);
-                anymove=true;
+        while (iterator.hasNext()) {
+            Ant tempAnt = (Ant)iterator.next();
+            if(isCrashed(tempAnt, planeSize))
+//                tempAnt.isActive = false;
+                list.remove(tempAnt);
+            /*
+             *monitoruj zmiany tylko mrowek nie zderzonych
+             */
+//            if(list->ant->isActive == true) {
+                multiAntStep(l->ant, renderer, r, colorList, antSize); //HE nwm co robic
+
+//                anyMove = true;
+//            }
+//            l = l->next;
+
         }
         return !(list.isEmpty());
 //        return anyMove;
