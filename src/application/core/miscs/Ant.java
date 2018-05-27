@@ -1,23 +1,25 @@
-package Ant;
+package application.core.miscs;
 
 import javafx.scene.paint.Color;
 
 public class Ant {
+    private static int number;
+
+    private int id;
     private int x;
     private int y;
-    private Color color = Color.BLUE;
+    private Color color;
     private int direction;
     private boolean isActive;
-    private static int number;
-    private int id;
 
-    public Ant(){
-        setId(++number);
+    public Ant() {
+
     }
+
     public Ant(int x, int y){
         this.setX(x);
         this.setY(y);
-        setId(++number);
+        setId(number++);
         setActive(true);
     }
 

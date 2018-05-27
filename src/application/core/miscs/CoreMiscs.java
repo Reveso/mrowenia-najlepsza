@@ -1,6 +1,6 @@
-package coreMiscs;
-import Ant.Ant;
-public class coreMiscs {
+package application.core.miscs;
+
+public class CoreMiscs {
     public static boolean isCrashed(Ant ant, int planeSize) {
         if (ant.getX() > 0 && ant.getY() > 0 &&
                 ant.getX() < planeSize - 1 && ant.getY() < planeSize - 1)
