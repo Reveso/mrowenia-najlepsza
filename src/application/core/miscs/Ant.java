@@ -21,6 +21,7 @@ public class Ant {
         this.setY(y);
         setId(number++);
         setActive(true);
+        color = Color.BLUE;
     }
 
     public int getX() {

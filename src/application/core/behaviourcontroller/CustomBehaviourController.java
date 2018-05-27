@@ -17,7 +17,7 @@ public class CustomBehaviourController {
     private static final int RIGHT = 666;
     private int behaviourLimit;
     private Map<Integer, Color> colors;
-
+    private int nextDirection;
     private boolean finishTimer;
     private GraphicsContext graphicsContext;
     private int antRectangleSize;
@@ -28,14 +28,22 @@ public class CustomBehaviourController {
     }
 
     private void antSetDirection(Ant ant, Plane plane) {
-        int nextDirection = behaviourArray[plane.cordinateValue(ant.getX(), ant.getY())];
+         nextDirection = behaviourArray[plane.cordinateValue(ant.getX(), ant.getY())];
+            if (nextDirection == RIGHT) // - w prawo
+                ant.setDirection(ant.getDirection() + 1);
+            else    // - w lewo
+                ant.setDirection(ant.getDirection() + 3);  // += 3;
+            ant.setDirection(ant.getDirection() % 4);     //kierunek %= 4;
+
+//         ant.setDirection(nextDirection);
+//         ant.setDirection(behaviourArray[plane.cordinateValue(ant.getX(), ant.getY())]);
     }
 
     private void antSetPlaneValue(Ant ant, Plane plane) {
-        if(( plane.cordinateValue(ant.getX(), ant.getY()) +1 ) == behaviourLimit)
-            plane.setCordinatesValue(ant.getX(), ant.getY(), 0);
+        if((( plane.cordinateValue(ant.getX(), ant.getY())) +1 ) == behaviourLimit)
+            plane.setCordinatesValue(ant.getX(), ant.getY(), -1);
         else
-            plane.setCordinatesValue(ant.getX(), ant.getY(), (plane.cordinateValue(ant.getX(), ant.getY() + 1)));
+            plane.setCordinatesValue(ant.getX(), ant.getY(), (plane.cordinateValue(ant.getX(), ant.getY()) + 1));
     }
 
     private void antStep (Ant ant, Plane plane) {
