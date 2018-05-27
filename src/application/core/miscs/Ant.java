@@ -3,25 +3,27 @@ package application.core.miscs;
 import javafx.scene.paint.Color;
 
 public class Ant {
-    private static int number;
+    private static int antNumber;
 
-    private int id;
+    private final int id;
     private int x;
     private int y;
     private Color color;
     private int direction;
     private boolean isActive;
 
-    public Ant() {
-
-    }
-
     public Ant(int x, int y){
-        this.setX(x);
-        this.setY(y);
-        setId(number++);
-        setActive(true);
-        color = Color.BLUE;
+        this.id = antNumber++;
+        this.x = x;
+        this.y = y;
+        this.isActive = true;
+    }
+    public Ant(int x, int y, Color color){
+        this.id = antNumber++;
+        this.x = x;
+        this.y = y;
+        this.isActive = true;
+        this.color = color;
     }
 
     public int getX() {
@@ -68,11 +70,5 @@ public class Ant {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    public int getNumber() {
-        return number;
-    }
 
 }

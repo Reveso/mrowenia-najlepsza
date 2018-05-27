@@ -52,43 +52,32 @@ public class BasicAntController {
 
         for (Ant ant : antList) {
             if (CoreMiscs.isCrashed(ant, planeSize)) {
+                System.out.println("CRASH " + ant.getId());
                 ant.setActive(false);
             }
             if (ant.isActive()) {
                 multiAntStep(ant, plane);
                 anyMove = true;
+                System.out.println("X: " + ant.getX() + " Y: " + ant.getY());
             }
         }
         return anyMove;
     }
 
-    private void setStartingLocations() {
-        antList.add(new Ant(40, 40));
-    }
-
-    public BasicAntController(final int planeSize, int maxSteps, int antCount, final Plane plane, GraphicsContext graphicsContext,
-                              int antRectangleSize) {
+    public BasicAntController(final int planeSize, final Plane plane, List<Ant> antList,
+                              GraphicsContext graphicsContext, int antRectangleSize) {
         this.graphicsContext = graphicsContext;
         this.antRectangleSize = antRectangleSize;
 
-
-        antList = new LinkedList<>();
-
-        for (int i = 0; i < antCount; i++)
-            setStartingLocations();
+        this.antList = antList;
 
         final Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(finishTimer) {
-                    System.out.println("Canceling");
-                    timer.cancel();
-
-                }
                 iterateThroughAntList(planeSize, plane);
             }
-        }, 1, 1);
+        }, 0, 5);
 
     }
 
