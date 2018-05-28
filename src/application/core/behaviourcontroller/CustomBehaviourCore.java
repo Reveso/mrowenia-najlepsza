@@ -8,8 +8,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.Map;
+import java.util.TimerTask;
 
-public class CustomBehaviourCore implements Runnable{
+public class CustomBehaviourCore extends TimerTask {
 
     private Ant theOnlyAntThatMatters;
     private Plane plane;

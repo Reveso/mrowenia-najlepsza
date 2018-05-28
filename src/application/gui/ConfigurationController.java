@@ -13,7 +13,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -42,8 +41,6 @@ public class ConfigurationController {
     Button okayButton;
     @FXML
     Button resetButton;
-    @FXML
-    ScrollPane scrollPaneOne;
 
     private int antCount;
     private Queue<Color> colorQueue;

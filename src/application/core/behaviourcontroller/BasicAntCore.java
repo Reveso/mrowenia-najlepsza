@@ -7,7 +7,7 @@ import application.core.entity.Plane;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class BasicAntCore implements Runnable {
+public class BasicAntCore extends TimerTask {
 
     private List<Ant> antList;
     private GraphicsContext graphicsContext;
@@ -66,13 +66,13 @@ public class BasicAntCore implements Runnable {
 
         for (Ant ant : antList) {
             if (ant.checkIfCrashed(plane.getPlaneSize())) {
-                System.out.println("CRASH " + ant.getId());
+//                System.out.println("CRASH " + ant.getId());
                 ant.setActive(false);
             }
             if (ant.isActive()) {
                 antStep(ant);
                 anyMove = true;
-                System.out.println("X: " + ant.getX() + " Y: " + ant.getY());
+//                System.out.println("X: " + ant.getX() + " Y: " + ant.getY());
             }
         }
         return anyMove;

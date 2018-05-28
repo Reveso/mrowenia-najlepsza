@@ -1,32 +1,30 @@
 package application;
 
+import application.core.behaviourcontroller.BasicAntCore;
 import application.core.behaviourcontroller.Controller;
+import application.core.behaviourcontroller.CustomBehaviourCore;
 import application.core.entity.Ant;
 import application.core.entity.Plane;
-import application.core.behaviourcontroller.CustomBehaviourCore;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import application.core.behaviourcontroller.BasicAntCore;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.TimerTask;
 
 public class Main extends Application {
     public static int planeSize;
@@ -78,14 +76,14 @@ public class Main extends Application {
         graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, canvas.getWidth()-5, 0+5);
         graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, 0+5, canvas.getHeight()-5);
 
-        Runnable antCore = null;
+        TimerTask antCore = null;
         if(controller == Controller.BASIC) {
             antCore = new BasicAntCore(new Plane(planeSize), antList, graphicsContext, 5);
         } else {
             antCore = new CustomBehaviourCore(new Plane(planeSize), antList.get(0), graphicsContext, 5);
         }
 
-        final Runnable finalAntCore = antCore;
+        final TimerTask finalAntCore = antCore;
         Timeline timeline = new Timeline(
                 new KeyFrame(
                         Duration.millis(refreshDelay),
