@@ -2,10 +2,8 @@ package application.core.behaviourcontroller;
 
 import java.util.*;
 
-import application.core.miscs.Ant; //bedzie w coreMiscs
-import application.core.miscs.CoreMiscs;
-import application.core.miscs.Plane;
-import javafx.animation.AnimationTimer;
+import application.core.entity.Ant;
+import application.core.entity.Plane;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -14,12 +12,22 @@ public class BasicAntCore implements Runnable {
     private List<Ant> antList;
     private GraphicsContext graphicsContext;
     private int antRectangleSize;
-    private boolean finishTimer = false;
     private Plane plane;
-    private int planeSize;
 
-    private void multiAntSetDirection(Ant ant, Plane plane) {
-        int nextDirection = plane.cordinateValue(ant.getX(), ant.getY());
+    public BasicAntCore(Plane plane, List<Ant> antList,
+                        GraphicsContext graphicsContext, int antRectangleSize) {
+        this.plane = plane;
+        this.antList = antList;
+        this.graphicsContext = graphicsContext;
+        this.antRectangleSize = antRectangleSize;
+
+       for(Ant ant : antList) {
+           ant.setStartDirection();
+       }
+    }
+
+    private void antSetDirection(Ant ant) {
+        int nextDirection = plane.getValueOnPosition(ant.getX(), ant.getY());
         if (nextDirection == -1) //bialy - w prawo
             ant.setDirection(ant.getDirection() + 1);
         else    //czorny - w lewo
@@ -27,39 +35,42 @@ public class BasicAntCore implements Runnable {
         ant.setDirection(ant.getDirection() % 4);     //kierunek %= 4;
     }
 
-    void multiAntSetPlaneValue(Ant ant, Plane plane) {
-        if (plane.cordinateValue(ant.getX(), ant.getY()) == -1) {
-            plane.setCordinatesValue(ant.getX(), ant.getY(), ant.getId());
+    private void antSetPlaneValue(Ant ant) {
+        if (plane.getValueOnPosition(ant.getX(), ant.getY()) == -1) {
+            plane.setValueOnPosition(ant.getX(), ant.getY(), ant.getId());
         } else {
-            plane.setCordinatesValue(ant.getX(), ant.getY(), -1);
+            plane.setValueOnPosition(ant.getX(), ant.getY(), -1);
         }
     }
 
-    void multiAntStep(Ant ant, Plane plane) {
-        multiAntSetPlaneValue(ant, plane);
+    private void antStep(Ant ant) {
+        antSetPlaneValue(ant);
 
-        CoreMiscs.antMove(ant);
-        multiAntSetDirection(ant, plane);
+        fillAntPositionOnCanvas(ant);
 
-        if(plane.cordinateValue(ant.getX(), ant.getY()) == -1)
+        ant.antMove();
+        antSetDirection(ant);
+    }
+
+    private void fillAntPositionOnCanvas(Ant ant) {
+        if(plane.getValueOnPosition(ant.getX(), ant.getY()) == -1)
             graphicsContext.setFill(Color.GRAY);
         else
             graphicsContext.setFill(ant.getColor());
 
-            graphicsContext.fillRect(ant.getX()*antRectangleSize, ant.getY()*antRectangleSize, antRectangleSize, antRectangleSize);
+        graphicsContext.fillRect(ant.getX()*antRectangleSize, ant.getY()*antRectangleSize, antRectangleSize, antRectangleSize);
     }
 
-
-    boolean iterateThroughAntList(int planeSize, Plane plane) {
+    private boolean iterateThroughAntList() {
         boolean anyMove = false;
 
         for (Ant ant : antList) {
-            if (CoreMiscs.isCrashed(ant, planeSize)) {
+            if (ant.checkIfCrashed(plane.getPlaneSize())) {
                 System.out.println("CRASH " + ant.getId());
                 ant.setActive(false);
             }
             if (ant.isActive()) {
-                multiAntStep(ant, plane);
+                antStep(ant);
                 anyMove = true;
                 System.out.println("X: " + ant.getX() + " Y: " + ant.getY());
             }
@@ -67,23 +78,8 @@ public class BasicAntCore implements Runnable {
         return anyMove;
     }
 
-    public BasicAntCore(int planeSize, Plane plane, List<Ant> antList,
-                        GraphicsContext graphicsContext, int antRectangleSize) {
-        this.planeSize = planeSize;
-        this.plane = plane;
-        this.antList = antList;
-        this.graphicsContext = graphicsContext;
-        this.antRectangleSize = antRectangleSize;
-    }
-
     @Override
     public void run() {
-        iterateThroughAntList(planeSize, plane);
-    }
-
-    public void printAntsLocations(List<Ant> ants) {
-        for (Ant ant : ants) {
-            System.out.println("id: " + ant.getId() + "; x: " + ant.getX() + "; y: " + ant.getY());
-        }
+        iterateThroughAntList();
     }
 }

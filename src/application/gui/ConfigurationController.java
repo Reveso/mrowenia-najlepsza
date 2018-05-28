@@ -2,7 +2,7 @@ package application.gui;
 
 import application.Main;
 import application.core.behaviourcontroller.Controller;
-import application.core.miscs.Ant;
+import application.core.entity.Ant;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -13,6 +13,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -41,23 +42,29 @@ public class ConfigurationController {
     Button okayButton;
     @FXML
     Button resetButton;
+    @FXML
+    ScrollPane scrollPaneOne;
 
     private int antCount;
     private Queue<Color> colorQueue;
 
+    private String behaviourString;
+
     @FXML
     public void initialize() {
         antCount = 0;
-        setupColorCollecitons();
+        setupColorCollections();
     }
 
-    private void setupColorCollecitons() {
+    private void setupColorCollections() {
         colorQueue = new LinkedBlockingQueue<>();
         colorQueue.add(Color.BLUE);
         colorQueue.add(Color.PINK);
         colorQueue.add(Color.CORAL);
         colorQueue.add(Color.YELLOW);
         colorQueue.add(Color.CHOCOLATE);
+        colorQueue.add(Color.CORNFLOWERBLUE);
+        colorQueue.add(Color.DARKTURQUOISE);
         shuffleQueue();
     }
 
@@ -158,14 +165,22 @@ public class ConfigurationController {
 
     @FXML
     public void onBehaviourStringButtonMouseClicked() {
-        String behaviourString = behaviourStringTextField.getText().trim();
-        if(!checkBehaviourString(behaviourString)) {
+        String tempBehaviourString = behaviourStringTextField.getText().trim();
+        if(!checkBehaviourString(tempBehaviourString)) {
             System.out.println(behaviourStringTextField.getText());
             displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
             return;
         }
 
-        if (behaviourString.equals("RL")) {
+        if(tempBehaviourString.length() > colorQueue.size()) {
+            displayAlert("Too long string", "Max length is: " + colorQueue.size());
+            return;
+        }
+
+        gridPaneOne.getChildren().clear();
+        antCount=0;
+
+        if (tempBehaviourString.equals("RL")) {
             Main.controller = Controller.BASIC;
             setupBasicBehaviourConfig();
         } else {
@@ -173,7 +188,7 @@ public class ConfigurationController {
             setupCustomBehaviourConfig();
         }
 
-        Main.behaviourString = behaviourString;
+        behaviourString = tempBehaviourString;
         Stage stage = (Stage) borderPane.getScene().getWindow();
         stage.sizeToScene();
 
@@ -241,17 +256,25 @@ public class ConfigurationController {
                     }
                     TextField textField = (TextField) hBoxChild;
                     System.out.println(textField.getId());
-                    if(textField.getId().contains("xPos")) {
-                        x = Integer.parseInt(textField.getText().trim());
-                        System.out.println("x: " + x);
-                    } else if (textField.getId().contains("yPos")) {
-                        y = Integer.parseInt(textField.getText().trim());
-                        System.out.println("y: " + y);
+                    try {
+                        if (textField.getId().contains("xPos")) {
+                            x = Integer.parseInt(textField.getText().trim());
+                            System.out.println("x: " + x);
+                        } else if (textField.getId().contains("yPos")) {
+                            y = Integer.parseInt(textField.getText().trim());
+                            System.out.println("y: " + y);
+                        }
+                    } catch (Exception e) {
+                        x = -1;
+                        y = -1;
+                        e.printStackTrace();
                     }
                 }
 
                 if(x > -1 && y > -1) {
-                    Main.antList.add(new Ant(x, y, colorQueue.poll()));
+                    Ant newAnt = new Ant(x, y, colorQueue.poll());
+                    newAnt.interpretBehaviourString(behaviourString);
+                    Main.antList.add(newAnt);
                 }
             }
         }

@@ -1,9 +1,8 @@
-package application.core.miscs;
+package application.core.entity;
 
 public class Plane {
     private int[][] plane;
     private int planeSize;
-
 
     public Plane(int size) {
         this.planeSize = size;
@@ -31,11 +30,15 @@ public class Plane {
         this.plane = plane;
     }
 
-    public int cordinateValue(int x, int y) {
+    public int getValueOnPosition(int x, int y) {
         return plane[x][y];
     }
 
-    public void setCordinatesValue(int x, int y, int value) {
+    public void setValueOnPosition(int x, int y, int value) {
         plane[x][y] = value;
+    }
+
+    public int getPlaneSize() {
+        return planeSize;
     }
 }

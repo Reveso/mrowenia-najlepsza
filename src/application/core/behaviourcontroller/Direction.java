@@ -1,5 +1,5 @@
 package application.core.behaviourcontroller;
 
-enum Direction {
+public enum Direction {
     LEFT, RIGHT
 }
