@@ -5,6 +5,7 @@ import application.core.miscs.Plane;
 import application.core.miscs.Ant;
 import application.core.miscs.CoreMiscs;
 import com.sun.org.apache.xpath.internal.SourceTree;
+import javafx.animation.Timeline;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -12,7 +13,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class CustomBehaviourController {
+public class CustomBehaviourCore implements Runnable{
+    private Ant theOnlyAntThatMatters;
+    private Plane plane;
     private int[] behaviourArray;
     private static final int LEFT = 69;
     private static final int RIGHT = 666;
@@ -20,7 +23,6 @@ public class CustomBehaviourController {
     private Map<Integer, Color> colors;
     private int nextDirection;
 
-    private boolean finishTimer;
     private GraphicsContext graphicsContext;
     private int antRectangleSize;
 
@@ -37,8 +39,6 @@ public class CustomBehaviourController {
                 ant.setDirection(ant.getDirection() + 3);  // += 3;
             ant.setDirection(ant.getDirection() % 4);     //kierunek %= 4;
 
-//         ant.setDirection(nextDirection);
-//         ant.setDirection(behaviourArray[plane.cordinateValue(ant.getX(), ant.getY())]);
     }
 
     private void antSetPlaneValue(Ant ant, Plane plane) {
@@ -65,35 +65,22 @@ public class CustomBehaviourController {
         antSetDirection(ant, plane);
     }
 
-    public CustomBehaviourController(int planeSize, String behaviourString, Ant theOnlyAntThatMatters,
-                                     GraphicsContext graphicsContext, int antRectangleSize) {
+    public CustomBehaviourCore(int planeSize, String behaviourString, Ant theOnlyAntThatMatters,
+                               GraphicsContext graphicsContext, int antRectangleSize) {
         this.colors = Main.colorMap;
         this.graphicsContext = graphicsContext;
         this.antRectangleSize = antRectangleSize;
-
-        Plane plane = new Plane(planeSize);
-        //plane.createPlane(planeSize);
+        this.plane = new Plane(planeSize);
+        this.theOnlyAntThatMatters = theOnlyAntThatMatters;
 
         interpretBehaviourString(behaviourString);
         behaviourLimit = behaviourString.length();
         setAntStartDirection(theOnlyAntThatMatters);
+    }
 
-//        while(!CoreMiscs.isCrashed(theOnlyAntThatMatters, planeSize)) {
-//            System.out.println("Ant x: " + theOnlyAntThatMatters.getX() + " y: " + theOnlyAntThatMatters.getY());
-//            antStep(theOnlyAntThatMatters, plane);
-//        }
-
-        final Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println(CoreMiscs.isCrashed(theOnlyAntThatMatters, planeSize));
-                System.out.println("Ant x: " + theOnlyAntThatMatters.getX() + " y: " + theOnlyAntThatMatters.getY());
-                antStep(theOnlyAntThatMatters, plane);
-
-            }
-        }, 0, 1);
-
+    @Override
+    public void run() {
+        antStep(theOnlyAntThatMatters, plane);
     }
 
     private void interpretBehaviourString (String behaviourString) {

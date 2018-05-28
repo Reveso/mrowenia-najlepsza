@@ -5,15 +5,18 @@ import java.util.*;
 import application.core.miscs.Ant; //bedzie w coreMiscs
 import application.core.miscs.CoreMiscs;
 import application.core.miscs.Plane;
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class BasicAntController {
+public class BasicAntCore implements Runnable {
 
     private List<Ant> antList;
     private GraphicsContext graphicsContext;
     private int antRectangleSize;
     private boolean finishTimer = false;
+    private Plane plane;
+    private int planeSize;
 
     private void multiAntSetDirection(Ant ant, Plane plane) {
         int nextDirection = plane.cordinateValue(ant.getX(), ant.getY());
@@ -39,7 +42,7 @@ public class BasicAntController {
         multiAntSetDirection(ant, plane);
 
         if(plane.cordinateValue(ant.getX(), ant.getY()) == -1)
-            graphicsContext.setFill(Color.WHITE);
+            graphicsContext.setFill(Color.GRAY);
         else
             graphicsContext.setFill(ant.getColor());
 
@@ -64,21 +67,18 @@ public class BasicAntController {
         return anyMove;
     }
 
-    public BasicAntController(final int planeSize, final Plane plane, List<Ant> antList,
-                              GraphicsContext graphicsContext, int antRectangleSize) {
+    public BasicAntCore(int planeSize, Plane plane, List<Ant> antList,
+                        GraphicsContext graphicsContext, int antRectangleSize) {
+        this.planeSize = planeSize;
+        this.plane = plane;
+        this.antList = antList;
         this.graphicsContext = graphicsContext;
         this.antRectangleSize = antRectangleSize;
+    }
 
-        this.antList = antList;
-
-        final Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                iterateThroughAntList(planeSize, plane);
-            }
-        }, 0, 5);
-
+    @Override
+    public void run() {
+        iterateThroughAntList(planeSize, plane);
     }
 
     public void printAntsLocations(List<Ant> ants) {

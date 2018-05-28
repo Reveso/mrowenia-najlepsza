@@ -3,7 +3,9 @@ package application;
 import application.core.behaviourcontroller.Controller;
 import application.core.miscs.Ant;
 import application.core.miscs.Plane;
-import application.core.behaviourcontroller.CustomBehaviourController;
+import application.core.behaviourcontroller.CustomBehaviourCore;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -13,17 +15,15 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
-import application.core.miscs.CoreMiscs;
-import application.core.behaviourcontroller.BasicAntController;
+import application.core.behaviourcontroller.BasicAntCore;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends Application {
     public static String behaviourString;
@@ -65,26 +65,21 @@ public class Main extends Application {
 
         animationRoot.getChildren().addAll(canvas);
 
-//        graphicsContext.setFill(Color.BLUE);
-//        graphicsContext.fillRect(100, 100, 20, 20);
-//
-//        graphicsContext.setFill(Color.GOLD);
-//        graphicsContext.fillRect(101, 101, 5, 5);
-//
-//        graphicsContext.setFill(Color.BLUE);
-//        graphicsContext.fillRect(0, 0, 10, 10);
-//
-//        graphicsContext.setFill(Color.RED);
-//        graphicsContext.fillRect(10, 0, 10, 10);
-//
-//        graphicsContext.setFill(Color.BLUE);
-//        graphicsContext.fillRect(20, 0, 10, 10);
-
+        Runnable antCore = null;
         if(controller == Controller.BASIC) {
-            new BasicAntController(planeSize, new Plane(planeSize), antList, graphicsContext, 5);
+            antCore = new BasicAntCore(planeSize, new Plane(planeSize), antList, graphicsContext, 5);
         } else if (controller == Controller.CUSTOM) {
-            new CustomBehaviourController(planeSize, behaviourString, antList.get(0), graphicsContext, 5);
+            antCore = new CustomBehaviourCore(planeSize, behaviourString, antList.get(0), graphicsContext, 5);
         }
+
+        final Runnable finalAntCore = antCore;
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis(1),
+                        event -> finalAntCore.run())
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 
     }
 
