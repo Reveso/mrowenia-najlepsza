@@ -83,7 +83,6 @@ public class ConfigurationController {
         colorQueue.add(Color.KHAKI);
         colorQueue.add(Color.INDIGO);
         colorQueue.add(Color.GOLD);
-        colorQueue.add(Color.GRAY);
         colorQueue.add(Color.DARKVIOLET);
         colorQueue.add(Color.BLANCHEDALMOND);
         colorQueue.add(Color.BROWN);
