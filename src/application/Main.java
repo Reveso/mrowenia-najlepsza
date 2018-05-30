@@ -10,12 +10,15 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -34,6 +37,8 @@ public class Main extends Application {
     public static Canvas canvas;
     public static GraphicsContext graphicsContext;
     public static Controller controller;
+
+    Timeline timeline;
 
     private void displayConfigDialog() throws IOException {
         Stage configStage = new Stage(StageStyle.UTILITY);
@@ -67,8 +72,25 @@ public class Main extends Application {
         primaryStage.setResizable(true);
         primaryStage.setScene(scene);
 
+        HBox lowerHbox = new HBox(10);
+        BorderPane.setAlignment(lowerHbox, Pos.CENTER_LEFT);
+
+        Button pauseButton = new Button("Pause");
+        lowerHbox.getChildren().add(pauseButton);
+
+        pauseButton.setOnMouseClicked(event -> {
+            if (pauseButton.getText().toLowerCase().equals("pause")) {
+                timeline.pause();
+                pauseButton.setText("Play");
+            } else {
+                timeline.play();
+                pauseButton.setText("Pause");
+            }
+        });
+
         scrollPane.setContent(canvas);
         borderPane.setCenter(scrollPane);
+        borderPane.setBottom(lowerHbox);
 //        animationRoot.getChildren().addAll(canvas);
 
         graphicsContext.strokeLine(0+5, 0+5, canvas.getWidth()-5, 0+5);
@@ -84,7 +106,7 @@ public class Main extends Application {
         }
 
         final TimerTask finalAntCore = antCore;
-        Timeline timeline = new Timeline(
+        timeline = new Timeline(
                 new KeyFrame(
                         Duration.millis(refreshDelay),
                         event -> finalAntCore.run())
