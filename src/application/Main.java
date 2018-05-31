@@ -45,7 +45,7 @@ public class Main extends Application {
 
     private void displayConfigDialog() throws IOException {
         Stage configStage = new Stage(StageStyle.UNIFIED);
-        Parent configRoot = FXMLLoader.load(getClass().getResource("gui/configurationGui.fxml"));
+        Parent configRoot = FXMLLoader.load(getClass().getResource("configgui/configurationGui.fxml"));
         configStage.setTitle("Langton's Ant");
         configStage.setScene(new Scene(configRoot));
         configStage.setOnCloseRequest(event -> {

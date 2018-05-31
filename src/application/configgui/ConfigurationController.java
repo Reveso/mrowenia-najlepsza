@@ -1,4 +1,4 @@
-package application.gui;
+package application.configgui;
 
 import application.Main;
 import application.langtonsant.Controller;
