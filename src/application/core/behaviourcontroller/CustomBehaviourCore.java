@@ -4,18 +4,20 @@ import application.Main;
 import application.core.entity.Ant;
 
 import application.core.entity.Plane;
+import application.core.entity.SavableColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.TimerTask;
 
-public class CustomBehaviourCore extends TimerTask {
+public class CustomBehaviourCore extends SavableAntCore {
 
     private Ant theOnlyAntThatMatters;
     private Plane plane;
     private int behaviourLimit;
-    private Map<Integer, Color> colors;
+    private Map<Integer, SavableColor> colors;
 
     private GraphicsContext graphicsContext;
     private int antRectangleSize;
@@ -30,6 +32,7 @@ public class CustomBehaviourCore extends TimerTask {
 
         behaviourLimit = theOnlyAntThatMatters.behaviourArray.length;
         theOnlyAntThatMatters.setStartDirection();
+        preFillPlane();
     }
 
     private void markAsVisited(Ant ant){
@@ -70,13 +73,48 @@ public class CustomBehaviourCore extends TimerTask {
         if(planeValueOnAntPosition == -1) {
             graphicsContext.setFill(Color.WHITE);
         } else {
-            graphicsContext.setFill(colors.get(planeValueOnAntPosition));
+            graphicsContext.setFill(colors.get(planeValueOnAntPosition).toColorClass());
         }
         graphicsContext.fillRect(ant.getX()*antRectangleSize, ant.getY()*antRectangleSize, antRectangleSize, antRectangleSize);
+    }
+
+    private void fillPlaneOnPosition(int x, int y) {
+        int planeValueOnAntPosition = plane.getValueOnPosition(x, y);
+        if(planeValueOnAntPosition == -1) {
+            graphicsContext.setFill(Color.WHITE);
+        } else {
+            graphicsContext.setFill(colors.get(planeValueOnAntPosition).toColorClass());
+        }
+        graphicsContext.fillRect(x*antRectangleSize, y*antRectangleSize, antRectangleSize, antRectangleSize);
+    }
+
+    public void preFillPlane() {
+        for(int x=0; x<plane.getPlaneSize(); x++) {
+            for(int y=0; y<plane.getPlaneSize(); y++) {
+                fillPlaneOnPosition(x, y);
+            }
+        }
     }
 
     @Override
     public void run() {
         antStep(theOnlyAntThatMatters);
+    }
+
+    @Override
+    public Plane getPlane() {
+        return plane;
+    }
+
+    @Override
+    public List<Ant> getAntList() {
+        List<Ant> antList = new LinkedList<>();
+        antList.add(theOnlyAntThatMatters);
+        return antList;
+    }
+
+    @Override
+    public Map<Integer, SavableColor> getColorList() {
+        return colors;
     }
 }

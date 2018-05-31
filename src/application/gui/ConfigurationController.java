@@ -3,6 +3,8 @@ package application.gui;
 import application.Main;
 import application.core.behaviourcontroller.Controller;
 import application.core.entity.Ant;
+import application.core.entity.Plane;
+import application.core.entity.SavableColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -24,7 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -43,7 +45,7 @@ public class ConfigurationController {
     Button resetButton;
 
     private int antCount;
-    private Queue<Color> colorQueue;
+    private Queue<SavableColor> colorQueue;
 
     private String behaviourString;
 
@@ -55,58 +57,58 @@ public class ConfigurationController {
 
     private void setupColorCollections() {
         colorQueue = new LinkedBlockingQueue<>();
-        colorQueue.add(Color.BLUE);
-        colorQueue.add(Color.PINK);
-        colorQueue.add(Color.CORAL);
-        colorQueue.add(Color.YELLOW);
-        colorQueue.add(Color.CHOCOLATE);
-        colorQueue.add(Color.CORNFLOWERBLUE);
-        colorQueue.add(Color.DARKTURQUOISE);
-        colorQueue.add(Color.VIOLET);
-        colorQueue.add(Color.SILVER);
-        colorQueue.add(Color.TURQUOISE);
-        colorQueue.add(Color.TAN);
-        colorQueue.add(Color.TEAL);
-        colorQueue.add(Color.THISTLE);
-        colorQueue.add(Color.WHEAT);
-        colorQueue.add(Color.SIENNA);
-        colorQueue.add(Color.SADDLEBROWN);
-        colorQueue.add(Color.SEASHELL);
-        colorQueue.add(Color.SALMON);
-        colorQueue.add(Color.PURPLE);
-        colorQueue.add(Color.PLUM);
-        colorQueue.add(Color.PERU);;
-        colorQueue.add(Color.PALEGOLDENROD);
-        colorQueue.add(Color.ORANGE);
-        colorQueue.add(Color.LIME);
-        colorQueue.add(Color.LINEN);
-        colorQueue.add(Color.KHAKI);
-        colorQueue.add(Color.INDIGO);
-        colorQueue.add(Color.GOLD);
-        colorQueue.add(Color.DARKVIOLET);
-        colorQueue.add(Color.BLANCHEDALMOND);
-        colorQueue.add(Color.BROWN);
-        colorQueue.add(Color.BEIGE);
-        colorQueue.add(Color.BISQUE);
-        colorQueue.add(Color.DARKORANGE);
-        colorQueue.add(Color.DEEPPINK);
-        colorQueue.add(Color.FUCHSIA);
-        colorQueue.add(Color.RED);
-        colorQueue.add(Color.CYAN);
-        colorQueue.add(Color.CORAL);
-        colorQueue.add(Color.BLACK);
+        colorQueue.add(new SavableColor(Color.BLUE));
+        colorQueue.add(new SavableColor(Color.PINK));
+        colorQueue.add(new SavableColor(Color.CORAL));
+//        colorQueue.add(Color.YELLOW);
+//        colorQueue.add(Color.CHOCOLATE);
+//        colorQueue.add(Color.CORNFLOWERBLUE);
+//        colorQueue.add(Color.DARKTURQUOISE);
+//        colorQueue.add(Color.VIOLET);
+//        colorQueue.add(Color.SILVER);
+//        colorQueue.add(Color.TURQUOISE);
+//        colorQueue.add(Color.TAN);
+//        colorQueue.add(Color.TEAL);
+//        colorQueue.add(Color.THISTLE);
+//        colorQueue.add(Color.WHEAT);
+//        colorQueue.add(Color.SIENNA);
+//        colorQueue.add(Color.SADDLEBROWN);
+//        colorQueue.add(Color.SEASHELL);
+//        colorQueue.add(Color.SALMON);
+//        colorQueue.add(Color.PURPLE);
+//        colorQueue.add(Color.PLUM);
+//        colorQueue.add(Color.PERU);;
+//        colorQueue.add(Color.PALEGOLDENROD);
+//        colorQueue.add(Color.ORANGE);
+//        colorQueue.add(Color.LIME);
+//        colorQueue.add(Color.LINEN);
+//        colorQueue.add(Color.KHAKI);
+//        colorQueue.add(Color.INDIGO);
+//        colorQueue.add(Color.GOLD);
+//        colorQueue.add(Color.DARKVIOLET);
+//        colorQueue.add(Color.BLANCHEDALMOND);
+//        colorQueue.add(Color.BROWN);
+//        colorQueue.add(Color.BEIGE);
+//        colorQueue.add(Color.BISQUE);
+//        colorQueue.add(Color.DARKORANGE);
+//        colorQueue.add(Color.DEEPPINK);
+//        colorQueue.add(Color.FUCHSIA);
+//        colorQueue.add(Color.RED);
+//        colorQueue.add(Color.CYAN);
+//        colorQueue.add(Color.CORAL);
+//        colorQueue.add(Color.BLACK);
         shuffleQueue();
     }
 
     private void shuffleQueue() {
-        List<Color> colorList = new ArrayList<>(colorQueue);
+        List<SavableColor> colorList = new ArrayList<>(colorQueue);
         Collections.shuffle(colorList);
         colorQueue = new LinkedBlockingQueue<>();
         colorQueue.addAll(colorList);
 
         Main.colorMap = new HashMap<>();
         int i=0;
-        for (Color color : colorList) {
+        for (SavableColor color : colorList) {
             Main.colorMap.put(i, color);
             i++;
         }
@@ -195,35 +197,38 @@ public class ConfigurationController {
 
     @FXML
     public void onBehaviourStringButtonMouseClicked() {
-        String tempBehaviourString = behaviourStringTextField.getText().trim();
-        if(!checkBehaviourString(tempBehaviourString)) {
-            System.out.println(behaviourStringTextField.getText());
-            displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
-            return;
-        }
+        loadSavedAntCore();
+        return;
 
-        if(tempBehaviourString.length() > colorQueue.size()) {
-            displayAlert("Too long string", "Max length is: " + colorQueue.size());
-            return;
-        }
-
-        gridPaneOne.getChildren().clear();
-        antCount=0;
-
-        if (tempBehaviourString.equals("RL")) {
-            Main.controller = Controller.BASIC;
-            setupBasicBehaviourConfig();
-        } else {
-            Main.controller = Controller.CUSTOM;
-            setupCustomBehaviourConfig();
-        }
-
-        behaviourString = tempBehaviourString;
-        Stage stage = (Stage) borderPane.getScene().getWindow();
-        stage.sizeToScene();
-
-        okayButton.setDisable(false);
-        resetButton.setDisable(false);
+//        String tempBehaviourString = behaviourStringTextField.getText().trim();
+//        if(!checkBehaviourString(tempBehaviourString)) {
+//            System.out.println(behaviourStringTextField.getText());
+//            displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
+//            return;
+//        }
+//
+//        if(tempBehaviourString.length() > colorQueue.size()) {
+//            displayAlert("Too long string", "Max length is: " + colorQueue.size());
+//            return;
+//        }
+//
+//        gridPaneOne.getChildren().clear();
+//        antCount=0;
+//
+//        if (tempBehaviourString.equals("RL")) {
+//            Main.controller = Controller.BASIC;
+//            setupBasicBehaviourConfig();
+//        } else {
+//            Main.controller = Controller.CUSTOM;
+//            setupCustomBehaviourConfig();
+//        }
+//
+//        behaviourString = tempBehaviourString;
+//        Stage stage = (Stage) borderPane.getScene().getWindow();
+//        stage.sizeToScene();
+//
+//        okayButton.setDisable(false);
+//        resetButton.setDisable(false);
     }
 
     @FXML
@@ -363,6 +368,41 @@ public class ConfigurationController {
             }
         }
         return true;
+    }
+
+    private void loadSavedAntCore() {
+        String string = "locations.dat";
+
+        Plane plane;
+        List<Ant> antList;
+        Map<Integer, SavableColor> colors;
+
+        try (ObjectInput locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(string)))){
+             plane = (Plane) locFile.readObject();
+             antList = (List<Ant>) locFile.readObject();
+             colors = (Map<Integer, SavableColor>) locFile.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        Main.plane = plane;
+        Main.planeSize = plane.getPlaneSize();
+        Main.antList = antList;
+        Main.colorMap = colors;
+
+        Main.refreshDelay = 1000;
+        Main.canvas = new Canvas(Main.planeSize*5, Main.planeSize*5);
+        Main.graphicsContext = Main.canvas.getGraphicsContext2D();
+
+        if(colors == null) {
+            Main.controller = Controller.LOADED_BASIC;
+        } else if(antList.size() == 1) {
+            Main.controller = Controller.LOADED_CUSTOM;
+        }
+
+        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
+        stage.close();
     }
 
     private void displayAlert(String title, String header) {

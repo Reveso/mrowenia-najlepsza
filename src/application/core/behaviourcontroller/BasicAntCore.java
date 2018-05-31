@@ -4,10 +4,11 @@ import java.util.*;
 
 import application.core.entity.Ant;
 import application.core.entity.Plane;
+import application.core.entity.SavableColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class BasicAntCore extends TimerTask {
+public class BasicAntCore extends SavableAntCore {
 
     private List<Ant> antList;
     private GraphicsContext graphicsContext;
@@ -54,9 +55,9 @@ public class BasicAntCore extends TimerTask {
 
     private void fillAntPositionOnCanvas(Ant ant) {
         if(plane.getValueOnPosition(ant.getX(), ant.getY()) == -1)
-            graphicsContext.setFill(Color.GRAY);
+            graphicsContext.setFill(Color.WHITE);
         else
-            graphicsContext.setFill(ant.getColor());
+            graphicsContext.setFill(ant.getColor().toColorClass());
 
         graphicsContext.fillRect(ant.getX()*antRectangleSize, ant.getY()*antRectangleSize, antRectangleSize, antRectangleSize);
     }
@@ -81,5 +82,20 @@ public class BasicAntCore extends TimerTask {
     @Override
     public void run() {
         iterateThroughAntList();
+    }
+
+    @Override
+    public Plane getPlane() {
+        return plane;
+    }
+
+    @Override
+    public List<Ant> getAntList() {
+        return antList;
+    }
+
+    @Override
+    public Map<Integer, SavableColor> getColorList() {
+        return new HashMap<>();
     }
 }

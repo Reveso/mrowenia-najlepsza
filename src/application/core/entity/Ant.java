@@ -3,13 +3,17 @@ package application.core.entity;
 import application.core.behaviourcontroller.Direction;
 import javafx.scene.paint.Color;
 
-public class Ant {
+import java.io.Serializable;
+
+public class Ant implements Serializable {
+    private long serialVersionUID = 1L;
+
     private static int antNumber;
 
     private final int id;
     private int x;
     private int y;
-    private Color color;
+    private SavableColor color;
     private int direction;
     private boolean isActive;
 
@@ -22,7 +26,7 @@ public class Ant {
         this.isActive = true;
     }
 
-    public Ant(int x, int y, Color color){
+    public Ant(int x, int y, SavableColor color){
         this.id = antNumber++;
         this.x = x;
         this.y = y;
@@ -91,11 +95,11 @@ public class Ant {
         this.y = y;
     }
 
-    public Color getColor() {
+    public SavableColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(SavableColor color) {
         this.color = color;
     }
 

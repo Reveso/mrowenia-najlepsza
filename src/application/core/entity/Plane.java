@@ -1,6 +1,10 @@
 package application.core.entity;
 
-public class Plane {
+import java.io.Serializable;
+
+public class Plane implements Serializable {
+    long serialVersionUID = 1L;
+
     private int[][] plane;
     private int planeSize;
 
