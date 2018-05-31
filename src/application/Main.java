@@ -15,7 +15,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -25,9 +24,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
@@ -42,11 +39,7 @@ public class Main extends Application {
     public static Controller controller;
 
     Timeline timeline;
-    TimerTask antCore;
-    BasicAntCore basicAntCore;
-    CustomBehaviourCore customBehaviourCore;
-//    basicAntCore = new BasicAntCore(new Plane(planeSize), antList, graphicsContext, 5);
-    public Plane plane;
+
     private void displayConfigDialog() throws IOException {
         Stage configStage = new Stage(StageStyle.UTILITY);
         Parent configRoot = FXMLLoader.load(getClass().getResource("gui/configurationGui.fxml"));
@@ -83,11 +76,8 @@ public class Main extends Application {
         BorderPane.setAlignment(lowerHbox, Pos.CENTER_LEFT);
 
         Button pauseButton = new Button("Pause");
-        Button saveButton = new Button ( "Save");
-        Button loadButton = new Button ( "LoadPrevious");
         lowerHbox.getChildren().add(pauseButton);
-        lowerHbox.getChildren().add(saveButton);
-        lowerHbox.getChildren().add(loadButton);
+
         pauseButton.setOnMouseClicked(event -> {
             if (pauseButton.getText().toLowerCase().equals("pause")) {
                 timeline.pause();
@@ -96,19 +86,6 @@ public class Main extends Application {
                 timeline.play();
                 pauseButton.setText("Pause");
             }
-        });
-        saveButton.setOnMouseClicked(event -> {
-            save(basicAntCore);
-            timeline.pause();
-            pauseButton.setText("Play");
-//
-        });
-        loadButton.setOnMouseClicked(event -> {
-            timeline.pause();
-            pauseButton.setText("Play");
-            load();
-            antCore = new BasicAntCore(plane, antList, graphicsContext, 5);
-
         });
 
         scrollPane.setContent(canvas);
@@ -120,13 +97,12 @@ public class Main extends Application {
         graphicsContext.strokeLine(0+5, 0+5, 0+5, canvas.getHeight()-5);
         graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, canvas.getWidth()-5, 0+5);
         graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, 0+5, canvas.getHeight()-5);
-        plane = new Plane(planeSize);
+
+        TimerTask antCore = null;
         if(controller == Controller.BASIC) {
-            antCore = new BasicAntCore(plane, antList, graphicsContext, 5);
-//            antCore = basicAntCore;
+            antCore = new BasicAntCore(new Plane(planeSize), antList, graphicsContext, 5);
         } else {
-            antCore = new CustomBehaviourCore(plane, antList.get(0), graphicsContext, 5);
-//            antCore = customBehaviourCore;
+            antCore = new CustomBehaviourCore(new Plane(planeSize), antList.get(0), graphicsContext, 5);
         }
 
         final TimerTask finalAntCore = antCore;
@@ -148,71 +124,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    public void save(BasicAntCore basicAntCore){
-
-//        public static List<Ant> antList;
-//        plane
-        String string = "locations.dat";
-        try {
-            Files.deleteIfExists(Paths.get(string));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(string)))){
-
-            try {
-//                locFile.writeBoolean(true);
-                locFile.writeObject(plane);
-                for(Ant ant: antList)
-                    locFile.writeObject(ant);
-                locFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Save Information");
-        alert.setHeaderText("Save has completed succesfully");
-//        alert.setContentText("I have a great message for you!");
-
-        alert.showAndWait();
-    }
-    public void load(){
-//        public static List<Ant> antList;
-//        plane
-        String string = "locations.dat";
-        ObjectInputStream loccFile = null;
-        try(ObjectInputStream locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(string)))) {
-            loccFile=locFile;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            plane= (Plane) loccFile.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        antList.clear();
-        boolean eof = false;
-        while (!eof) {
-
-            try {
-                antList.add((Ant)loccFile.readObject());
-            } catch (EOFException e) {eof = true;} catch (IOException e) {
-                eof = true;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 }
