@@ -1,22 +1,20 @@
-package application.core.behaviourcontroller;
+package application.langtonsant.behaviourcore;
 
-import java.util.*;
-
-import application.core.entity.Ant;
-import application.core.entity.Plane;
-import application.core.entity.SavableColor;
+import application.langtonsant.entity.Ant;
+import application.langtonsant.entity.Plane;
+import application.langtonsant.entity.SavableColor;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+
+import java.util.List;
+import java.util.Map;
 
 public class BasicAntCore extends SavableAntCore {
 
     private List<Ant> antList;
-    private GraphicsContext graphicsContext;
-    private int antRectangleSize;
-    private Plane plane;
 
-    public BasicAntCore(Plane plane, List<Ant> antList,
+    public BasicAntCore(Plane plane, List<Ant> antList, Map<Integer, SavableColor> colorMap,
                         GraphicsContext graphicsContext, int antRectangleSize) {
+        this.colors = colorMap;
         this.plane = plane;
         this.antList = antList;
         this.graphicsContext = graphicsContext;
@@ -25,6 +23,7 @@ public class BasicAntCore extends SavableAntCore {
        for(Ant ant : antList) {
            ant.setStartDirection();
        }
+       preFillPlane();
     }
 
     private void antSetDirection(Ant ant) {
@@ -47,19 +46,10 @@ public class BasicAntCore extends SavableAntCore {
     private void antStep(Ant ant) {
         antSetPlaneValue(ant);
 
-        fillAntPositionOnCanvas(ant);
+        fillPlaneOnPosition(ant.getX(), ant.getY());
 
         ant.antMove();
         antSetDirection(ant);
-    }
-
-    private void fillAntPositionOnCanvas(Ant ant) {
-        if(plane.getValueOnPosition(ant.getX(), ant.getY()) == -1)
-            graphicsContext.setFill(Color.WHITE);
-        else
-            graphicsContext.setFill(ant.getColor().toColorClass());
-
-        graphicsContext.fillRect(ant.getX()*antRectangleSize, ant.getY()*antRectangleSize, antRectangleSize, antRectangleSize);
     }
 
     private boolean iterateThroughAntList() {
@@ -67,13 +57,11 @@ public class BasicAntCore extends SavableAntCore {
 
         for (Ant ant : antList) {
             if (ant.checkIfCrashed(plane.getPlaneSize())) {
-//                System.out.println("CRASH " + ant.getId());
                 ant.setActive(false);
             }
             if (ant.isActive()) {
                 antStep(ant);
                 anyMove = true;
-//                System.out.println("X: " + ant.getX() + " Y: " + ant.getY());
             }
         }
         return anyMove;
@@ -85,17 +73,7 @@ public class BasicAntCore extends SavableAntCore {
     }
 
     @Override
-    public Plane getPlane() {
-        return plane;
-    }
-
-    @Override
     public List<Ant> getAntList() {
         return antList;
-    }
-
-    @Override
-    public Map<Integer, SavableColor> getColorList() {
-        return new HashMap<>();
     }
 }

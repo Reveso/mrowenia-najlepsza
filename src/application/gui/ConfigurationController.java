@@ -1,10 +1,10 @@
 package application.gui;
 
 import application.Main;
-import application.core.behaviourcontroller.Controller;
-import application.core.entity.Ant;
-import application.core.entity.Plane;
-import application.core.entity.SavableColor;
+import application.langtonsant.Controller;
+import application.langtonsant.entity.Ant;
+import application.langtonsant.entity.Plane;
+import application.langtonsant.entity.SavableColor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -60,43 +61,43 @@ public class ConfigurationController {
         colorQueue.add(new SavableColor(Color.BLUE));
         colorQueue.add(new SavableColor(Color.PINK));
         colorQueue.add(new SavableColor(Color.CORAL));
-//        colorQueue.add(Color.YELLOW);
-//        colorQueue.add(Color.CHOCOLATE);
-//        colorQueue.add(Color.CORNFLOWERBLUE);
-//        colorQueue.add(Color.DARKTURQUOISE);
-//        colorQueue.add(Color.VIOLET);
-//        colorQueue.add(Color.SILVER);
-//        colorQueue.add(Color.TURQUOISE);
-//        colorQueue.add(Color.TAN);
-//        colorQueue.add(Color.TEAL);
-//        colorQueue.add(Color.THISTLE);
-//        colorQueue.add(Color.WHEAT);
-//        colorQueue.add(Color.SIENNA);
-//        colorQueue.add(Color.SADDLEBROWN);
-//        colorQueue.add(Color.SEASHELL);
-//        colorQueue.add(Color.SALMON);
-//        colorQueue.add(Color.PURPLE);
-//        colorQueue.add(Color.PLUM);
-//        colorQueue.add(Color.PERU);;
-//        colorQueue.add(Color.PALEGOLDENROD);
-//        colorQueue.add(Color.ORANGE);
-//        colorQueue.add(Color.LIME);
-//        colorQueue.add(Color.LINEN);
-//        colorQueue.add(Color.KHAKI);
-//        colorQueue.add(Color.INDIGO);
-//        colorQueue.add(Color.GOLD);
-//        colorQueue.add(Color.DARKVIOLET);
-//        colorQueue.add(Color.BLANCHEDALMOND);
-//        colorQueue.add(Color.BROWN);
-//        colorQueue.add(Color.BEIGE);
-//        colorQueue.add(Color.BISQUE);
-//        colorQueue.add(Color.DARKORANGE);
-//        colorQueue.add(Color.DEEPPINK);
-//        colorQueue.add(Color.FUCHSIA);
-//        colorQueue.add(Color.RED);
-//        colorQueue.add(Color.CYAN);
-//        colorQueue.add(Color.CORAL);
-//        colorQueue.add(Color.BLACK);
+        colorQueue.add(new SavableColor(Color.YELLOW));
+        colorQueue.add(new SavableColor(Color.CHOCOLATE));
+        colorQueue.add(new SavableColor(Color.CORNFLOWERBLUE));
+        colorQueue.add(new SavableColor(Color.DARKTURQUOISE));
+        colorQueue.add(new SavableColor(Color.VIOLET));
+        colorQueue.add(new SavableColor(Color.SILVER));
+        colorQueue.add(new SavableColor(Color.TURQUOISE));
+        colorQueue.add(new SavableColor(Color.TAN));
+        colorQueue.add(new SavableColor(Color.TEAL));
+        colorQueue.add(new SavableColor(Color.THISTLE));
+        colorQueue.add(new SavableColor(Color.WHEAT));
+        colorQueue.add(new SavableColor(Color.SIENNA));
+        colorQueue.add(new SavableColor(Color.SADDLEBROWN));
+        colorQueue.add(new SavableColor(Color.SEASHELL));
+        colorQueue.add(new SavableColor(Color.SALMON));
+        colorQueue.add(new SavableColor(Color.PURPLE));
+        colorQueue.add(new SavableColor(Color.PLUM));
+        colorQueue.add(new SavableColor(Color.PERU));
+        colorQueue.add(new SavableColor(Color.PALEGOLDENROD));
+        colorQueue.add(new SavableColor(Color.ORANGE));
+        colorQueue.add(new SavableColor(Color.LIME));
+        colorQueue.add(new SavableColor(Color.LINEN));
+        colorQueue.add(new SavableColor(Color.KHAKI));
+        colorQueue.add(new SavableColor(Color.INDIGO));
+        colorQueue.add(new SavableColor(Color.GOLD));
+        colorQueue.add(new SavableColor(Color.DARKVIOLET));
+        colorQueue.add(new SavableColor(Color.BLANCHEDALMOND));
+        colorQueue.add(new SavableColor(Color.BROWN));
+        colorQueue.add(new SavableColor(Color.BEIGE));
+        colorQueue.add(new SavableColor(Color.BISQUE));
+        colorQueue.add(new SavableColor(Color.DARKORANGE));
+        colorQueue.add(new SavableColor(Color.DEEPPINK));
+        colorQueue.add(new SavableColor(Color.FUCHSIA));
+        colorQueue.add(new SavableColor(Color.RED));
+        colorQueue.add(new SavableColor(Color.CYAN));
+        colorQueue.add(new SavableColor(Color.CORAL));
+        colorQueue.add(new SavableColor(Color.BLACK));
         shuffleQueue();
     }
 
@@ -107,7 +108,7 @@ public class ConfigurationController {
         colorQueue.addAll(colorList);
 
         Main.colorMap = new HashMap<>();
-        int i=0;
+        int i = 0;
         for (SavableColor color : colorList) {
             Main.colorMap.put(i, color);
             i++;
@@ -115,7 +116,7 @@ public class ConfigurationController {
     }
 
     private void addAntPosFields() {
-        if(antCount+1 > colorQueue.size()) {
+        if (antCount + 1 > colorQueue.size()) {
             displayAlert("Too much Ants", "Cannot add more Ants");
             return;
         }
@@ -123,7 +124,7 @@ public class ConfigurationController {
         HBox startingPositionsTextFieldsHBox = new HBox(10);
         startingPositionsTextFieldsHBox.setAlignment(Pos.CENTER);
 
-        Label label = new Label("Ant " + (antCount+1));
+        Label label = new Label("Ant " + (antCount + 1));
         TextField xPosTextField = new TextField();
         xPosTextField.setId("xPosTextField");
         xPosTextField.setPromptText("x");
@@ -148,8 +149,6 @@ public class ConfigurationController {
         if (stage.getHeight() > (screenSize.height / 2)) {
             stage.setHeight(screenSize.height / 2);
         }
-
-
         antCount++;
     }
 
@@ -158,7 +157,7 @@ public class ConfigurationController {
         BorderPane.setAlignment(startingPositionsLabel, Pos.CENTER);
         borderPane.setLeft(startingPositionsLabel);
 
-        setupBorderPaneRightChildren();
+        setupBorderPaneRightChildren(true);
         addAntPosFields();
     }
 
@@ -173,11 +172,11 @@ public class ConfigurationController {
         leftVBox.getChildren().addAll(startingPositionsLabel, addAntButton);
         borderPane.setLeft(leftVBox);
 
-        setupBorderPaneRightChildren();
+        setupBorderPaneRightChildren(true);
 
     }
 
-    private void setupBorderPaneRightChildren() {
+    private void setupBorderPaneRightChildren(boolean textFieldEnabled) {
         VBox VBox = new VBox();
         Label delayLabel = new Label("Delay per Refresh");
         TextField delayTextField = new TextField("1");
@@ -190,6 +189,7 @@ public class ConfigurationController {
         planeSizeTextField.setId("planeSizeTextField");
         planeSizeTextField.setPrefHeight(25);
         planeSizeTextField.setPrefWidth(25);
+        planeSizeTextField.setDisable(!textFieldEnabled);
 
         VBox.getChildren().addAll(delayLabel, delayTextField, planeSizeLabel, planeSizeTextField);
         borderPane.setRight(VBox);
@@ -197,38 +197,77 @@ public class ConfigurationController {
 
     @FXML
     public void onBehaviourStringButtonMouseClicked() {
-        loadSavedAntCore();
-        return;
+//        loadSavedAntCore();
+//        return;
 
-//        String tempBehaviourString = behaviourStringTextField.getText().trim();
-//        if(!checkBehaviourString(tempBehaviourString)) {
-//            System.out.println(behaviourStringTextField.getText());
-//            displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
-//            return;
-//        }
-//
-//        if(tempBehaviourString.length() > colorQueue.size()) {
-//            displayAlert("Too long string", "Max length is: " + colorQueue.size());
-//            return;
-//        }
-//
-//        gridPaneOne.getChildren().clear();
-//        antCount=0;
-//
-//        if (tempBehaviourString.equals("RL")) {
-//            Main.controller = Controller.BASIC;
-//            setupBasicBehaviourConfig();
-//        } else {
-//            Main.controller = Controller.CUSTOM;
-//            setupCustomBehaviourConfig();
-//        }
-//
-//        behaviourString = tempBehaviourString;
-//        Stage stage = (Stage) borderPane.getScene().getWindow();
-//        stage.sizeToScene();
-//
-//        okayButton.setDisable(false);
-//        resetButton.setDisable(false);
+        String tempBehaviourString = behaviourStringTextField.getText().trim();
+        if(!checkBehaviourString(tempBehaviourString)) {
+            System.out.println(behaviourStringTextField.getText());
+            displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
+            return;
+        }
+
+        if(tempBehaviourString.length() > colorQueue.size()) {
+            displayAlert("Too long string", "Max length is: " + colorQueue.size());
+            return;
+        }
+
+        gridPaneOne.getChildren().clear();
+        antCount=0;
+
+        if (tempBehaviourString.equals("RL")) {
+            Main.controller = Controller.BASIC;
+            setupBasicBehaviourConfig();
+        } else {
+            Main.controller = Controller.CUSTOM;
+            setupCustomBehaviourConfig();
+        }
+
+        behaviourString = tempBehaviourString;
+        Stage stage = (Stage) borderPane.getScene().getWindow();
+        stage.sizeToScene();
+
+        okayButton.setDisable(false);
+        resetButton.setDisable(false);
+    }
+
+    @FXML
+    public void onLoadPositionFromFileButtonMouseClicked() {
+        gridPaneOne.getChildren().clear();
+        borderPane.setLeft(null);
+        antCount=0;
+
+        setupBorderPaneRightChildren(false);
+
+        Button selectFileLocationButton = new Button("Select File Location");
+
+        Stage stage = (Stage) borderPane.getScene().getWindow();
+
+
+        selectFileLocationButton.setOnMouseClicked(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open saved locations file");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Locations data", "*.dat"));
+
+            File selectedFile = fileChooser.showOpenDialog(stage);
+            if (selectedFile != null) {
+                loadSavedAntCore(selectedFile);
+            }
+
+        });
+
+        gridPaneOne.getChildren().add(selectFileLocationButton);
+
+        stage.sizeToScene();
+        okayButton.setDisable(false);
+        resetButton.setDisable(false);
+    }
+
+    @FXML
+    public void onLoadPositionFromFileButtonKeyPressed(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER))
+            onLoadPositionFromFileButtonMouseClicked();
     }
 
     @FXML
@@ -250,22 +289,25 @@ public class ConfigurationController {
     }
 
     private boolean loadRightBorderPaneData() {
-        VBox rightVBox = (VBox)borderPane.getRight();
+        VBox rightVBox = (VBox) borderPane.getRight();
 
         for (Node node : rightVBox.getChildren()) {
-            if(!node.getClass().equals(TextField.class)) {
+            if (!node.getClass().equals(TextField.class)) {
                 continue;
             }
             TextField textField = (TextField) node;
             try {
                 if (textField.getId().contains("delay")) {
                     Main.refreshDelay = Integer.parseInt(textField.getText().trim());
-                    if(Main.refreshDelay < 1)
+                    if (Main.refreshDelay < 1)
                         return false;
-                } else if(textField.getId().contains("planeSize")){
-                    Main.planeSize = Integer.parseInt(textField.getText().trim());
-                    if(Main.planeSize < 1)
+                } else if (textField.getId().contains("planeSize")) {
+                    int planeSize = Integer.parseInt(textField.getText().trim());
+                    if (planeSize < 1)
                         return false;
+                    else {
+                        Main.plane = new Plane(planeSize);
+                    }
                 }
 
             } catch (Exception e) {
@@ -280,13 +322,13 @@ public class ConfigurationController {
         Main.antList = new LinkedList<>();
 
         for (Node gridPaneChild : gridPaneOne.getChildren()) {
-            if(gridPaneChild.getClass().equals(HBox.class)){
+            if (gridPaneChild.getClass().equals(HBox.class)) {
                 HBox hBox = (HBox) gridPaneChild;
                 int x = -1;
                 int y = -1;
 
                 for (Node hBoxChild : hBox.getChildren()) {
-                    if(!hBoxChild.getClass().equals(TextField.class)) {
+                    if (!hBoxChild.getClass().equals(TextField.class)) {
                         continue;
                     }
                     TextField textField = (TextField) hBoxChild;
@@ -306,32 +348,32 @@ public class ConfigurationController {
                     }
                 }
 
-                if(x > -1 && y > -1) {
-                    Ant newAnt = new Ant(x, y, colorQueue.poll());
+                if (x > -1 && y > -1) {
+                    Ant newAnt = new Ant(x, y);
                     newAnt.interpretBehaviourString(behaviourString);
                     Main.antList.add(newAnt);
                 }
             }
         }
 
-        if(Main.antList.size() < 1) {
+        if (Main.antList.size() < 1) {
             return false;
         } else return true;
     }
 
     @FXML
     public void onOkayClicked() {
-        if(!loadRightBorderPaneData()) {
+        if (!loadRightBorderPaneData()) {
             displayAlert("Wrong data", "Right Pane");
             return;
         }
 
-        if(!loadAntList()) {
+        if (!loadAntList()) {
             displayAlert("Wrong data", "Ant List");
             return;
         }
 
-        Main.canvas = new Canvas(Main.planeSize*5, Main.planeSize*5);
+        Main.canvas = new Canvas(Main.plane.getPlaneSize() * 5, Main.plane.getPlaneSize() * 5);
         Main.graphicsContext = Main.canvas.getGraphicsContext2D();
 
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
@@ -359,47 +401,47 @@ public class ConfigurationController {
     }
 
     private boolean checkBehaviourString(String behaviourString) {
-        if(behaviourString == null) return false;
-        if(behaviourString.length() < 2) return false;
+        if (behaviourString == null) return false;
+        if (behaviourString.length() < 2) return false;
 
-        for(int i=0; i<behaviourString.length(); i++) {
-            if(behaviourString.charAt(i) != 'R' && behaviourString.charAt(i) != 'L') {
+        for (int i = 0; i < behaviourString.length(); i++) {
+            if (behaviourString.charAt(i) != 'R' && behaviourString.charAt(i) != 'L') {
                 return false;
             }
         }
         return true;
     }
 
-    private void loadSavedAntCore() {
-        String string = "locations.dat";
+    private void loadSavedAntCore(File file) {
 
+        Controller controller;
         Plane plane;
         List<Ant> antList;
         Map<Integer, SavableColor> colors;
 
-        try (ObjectInput locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(string)))){
-             plane = (Plane) locFile.readObject();
-             antList = (List<Ant>) locFile.readObject();
-             colors = (Map<Integer, SavableColor>) locFile.readObject();
+        try (ObjectInput locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+            controller = (Controller) locFile.readObject();
+            plane = (Plane) locFile.readObject();
+            antList = (List<Ant>) locFile.readObject();
+            colors = (Map<Integer, SavableColor>) locFile.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            displayAlert("File Incorrect", "Couldn't load a file");
             return;
         }
 
+        if (!loadRightBorderPaneData()) {
+            displayAlert("Wrong data", "Right Pane");
+            return;
+        }
+
+        Main.controller = controller;
         Main.plane = plane;
-        Main.planeSize = plane.getPlaneSize();
         Main.antList = antList;
         Main.colorMap = colors;
 
-        Main.refreshDelay = 1000;
-        Main.canvas = new Canvas(Main.planeSize*5, Main.planeSize*5);
+        Main.canvas = new Canvas(Main.plane.getPlaneSize() * 5, Main.plane.getPlaneSize() * 5);
         Main.graphicsContext = Main.canvas.getGraphicsContext2D();
-
-        if(colors == null) {
-            Main.controller = Controller.LOADED_BASIC;
-        } else if(antList.size() == 1) {
-            Main.controller = Controller.LOADED_CUSTOM;
-        }
 
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();

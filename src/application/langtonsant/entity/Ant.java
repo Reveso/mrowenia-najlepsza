@@ -1,7 +1,6 @@
-package application.core.entity;
+package application.langtonsant.entity;
 
-import application.core.behaviourcontroller.Direction;
-import javafx.scene.paint.Color;
+import application.langtonsant.Direction;
 
 import java.io.Serializable;
 
@@ -13,7 +12,6 @@ public class Ant implements Serializable {
     private final int id;
     private int x;
     private int y;
-    private SavableColor color;
     private int direction;
     private boolean isActive;
 
@@ -24,14 +22,6 @@ public class Ant implements Serializable {
         this.x = x;
         this.y = y;
         this.isActive = true;
-    }
-
-    public Ant(int x, int y, SavableColor color){
-        this.id = antNumber++;
-        this.x = x;
-        this.y = y;
-        this.isActive = true;
-        this.color = color;
     }
 
     public void antMove() {
@@ -93,14 +83,6 @@ public class Ant implements Serializable {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    public SavableColor getColor() {
-        return color;
-    }
-
-    public void setColor(SavableColor color) {
-        this.color = color;
     }
 
     public int getDirection() {

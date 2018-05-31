@@ -1,4 +1,4 @@
-package application.core.entity;
+package application.langtonsant.entity;
 
 import javafx.scene.paint.Color;
 
