@@ -20,12 +20,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import javafx.util.converter.NumberStringConverter;
 
 import java.io.*;
 import java.util.List;
@@ -33,6 +36,8 @@ import java.util.Map;
 
 public class Main extends Application {
     public static int refreshDelay;
+    public static Long stepsLimit;
+    public static Long currentSteps;
     public static List<Ant> antList;
     public static Map<Integer, SavableColor> colorMap;
     public static Canvas canvas;
@@ -82,6 +87,9 @@ public class Main extends Application {
         Button saveButton = new Button("Save");
         Button backToSettingsButton = new Button("Back to Settings");
 
+        TextField stepCountTextField = new TextField("Steps: " + currentSteps);
+
+
         pauseButton.setOnMouseClicked(event -> {
             if (pauseButton.getText().toLowerCase().equals("pause")) {
                 timeline.pause();
@@ -110,7 +118,7 @@ public class Main extends Application {
 
         backToSettingsButton.setOnMouseClicked(event -> resetApplication());
 
-        lowerHbox.getChildren().addAll(pauseButton, saveButton, backToSettingsButton);
+        lowerHbox.getChildren().addAll(pauseButton, saveButton, backToSettingsButton, stepCountTextField);
         scrollPane.setContent(canvas);
         borderPane.setCenter(scrollPane);
         borderPane.setBottom(lowerHbox);
@@ -126,7 +134,17 @@ public class Main extends Application {
                 new KeyFrame(
                         Duration.millis(refreshDelay),
                         event -> {
-                            finalAntCore.run();
+                            if(finalAntCore.run()) {
+                                currentSteps++;
+                                if(stepsLimit.equals(currentSteps)) {
+                                    timeline.pause();
+                                    pauseButton.setText("Play");
+                                }
+                                stepCountTextField.setText("Steps: " + currentSteps);
+                            } else {
+                                timeline.pause();
+                                pauseButton.setText("Play");
+                            }
                         })
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -160,6 +178,7 @@ public class Main extends Application {
             locFile.writeObject(savableAntCore.getPlane());
             locFile.writeObject(savableAntCore.getAntList());
             locFile.writeObject(savableAntCore.getColorList());
+            locFile.writeObject(currentSteps);
         } catch (IOException e) {
             e.printStackTrace();
 

@@ -62,8 +62,13 @@ public class CustomAntCore extends SavableAntCore {
     }
 
     @Override
-    public void run() {
-        antStep(theOnlyAntThatMatters);
+    public boolean run() {
+        theOnlyAntThatMatters.setActive(!theOnlyAntThatMatters.checkIfCrashed(plane.getPlaneSize()));
+        if(theOnlyAntThatMatters.isActive()) {
+            antStep(theOnlyAntThatMatters);
+        }
+
+        return theOnlyAntThatMatters.isActive();
     }
 
     @Override

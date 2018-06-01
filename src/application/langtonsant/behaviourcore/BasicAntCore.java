@@ -68,8 +68,8 @@ public class BasicAntCore extends SavableAntCore {
     }
 
     @Override
-    public void run() {
-        iterateThroughAntList();
+    public boolean run() {
+        return iterateThroughAntList();
     }
 
     @Override

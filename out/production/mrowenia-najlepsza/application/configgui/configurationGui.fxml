@@ -12,7 +12,7 @@
 <BorderPane fx:id="borderPane"
             xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="application.gui.ConfigurationController">
+            fx:controller="application.configgui.ConfigurationController">
     <padding>
         <Insets right="10" left="10"/>
     </padding>

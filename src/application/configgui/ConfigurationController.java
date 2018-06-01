@@ -49,6 +49,7 @@ public class ConfigurationController {
     private Queue<SavableColor> colorQueue;
 
     private String behaviourString;
+    private File locationsLoadFile;
 
     @FXML
     public void initialize() {
@@ -191,14 +192,20 @@ public class ConfigurationController {
         planeSizeTextField.setPrefWidth(25);
         planeSizeTextField.setDisable(!textFieldEnabled);
 
-        VBox.getChildren().addAll(delayLabel, delayTextField, planeSizeLabel, planeSizeTextField);
+        Label stepsLimitLabel = new Label("Steps limit");
+        TextField stepsLimitTextField = new TextField("0");
+        stepsLimitTextField.setId("stepsLimitTextField");
+        stepsLimitTextField.setPrefHeight(25);
+        stepsLimitTextField.setPrefWidth(25);
+
+        VBox.getChildren().addAll(delayLabel, delayTextField, planeSizeLabel, planeSizeTextField,
+                stepsLimitLabel, stepsLimitTextField);
         borderPane.setRight(VBox);
     }
 
     @FXML
     public void onBehaviourStringButtonMouseClicked() {
-//        loadSavedAntCore();
-//        return;
+        locationsLoadFile = null;
 
         String tempBehaviourString = behaviourStringTextField.getText().trim();
         if(!checkBehaviourString(tempBehaviourString)) {
@@ -214,6 +221,7 @@ public class ConfigurationController {
 
         gridPaneOne.getChildren().clear();
         antCount=0;
+        Main.currentSteps = 0L;
 
         if (tempBehaviourString.equals("RL")) {
             Main.controller = Controller.BASIC;
@@ -222,6 +230,7 @@ public class ConfigurationController {
             Main.controller = Controller.CUSTOM;
             setupCustomBehaviourConfig();
         }
+
 
         behaviourString = tempBehaviourString;
         Stage stage = (Stage) borderPane.getScene().getWindow();
@@ -233,16 +242,20 @@ public class ConfigurationController {
 
     @FXML
     public void onLoadPositionFromFileButtonMouseClicked() {
+        locationsLoadFile = null;
+
         gridPaneOne.getChildren().clear();
         borderPane.setLeft(null);
         antCount=0;
 
         setupBorderPaneRightChildren(false);
 
+        HBox loadFileHbox = new HBox(10);
+        TextField selectFileLocationTextField = new TextField();
+        selectFileLocationTextField.setDisable(true);
         Button selectFileLocationButton = new Button("Select File Location");
 
         Stage stage = (Stage) borderPane.getScene().getWindow();
-
 
         selectFileLocationButton.setOnMouseClicked(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -252,12 +265,15 @@ public class ConfigurationController {
 
             File selectedFile = fileChooser.showOpenDialog(stage);
             if (selectedFile != null) {
-                loadSavedAntCore(selectedFile);
+//                loadSavedAntCore(selectedFile);
+                selectFileLocationTextField.setText(selectedFile.getAbsolutePath());
+                locationsLoadFile = selectedFile;
             }
 
         });
 
-        gridPaneOne.getChildren().add(selectFileLocationButton);
+        loadFileHbox.getChildren().addAll(selectFileLocationTextField, selectFileLocationButton);
+        gridPaneOne.getChildren().add(loadFileHbox);
 
         stage.sizeToScene();
         okayButton.setDisable(false);
@@ -308,6 +324,12 @@ public class ConfigurationController {
                     else {
                         Main.plane = new Plane(planeSize);
                     }
+                } else if (textField.getId().contains("stepsLimit")) {
+                    Long stepsLimit = Long.parseLong(textField.getText().trim());
+                    if(stepsLimit < 1) {
+                        Main.stepsLimit = -1L;
+                    }
+                    Main.stepsLimit = stepsLimit;
                 }
 
             } catch (Exception e) {
@@ -363,6 +385,10 @@ public class ConfigurationController {
 
     @FXML
     public void onOkayClicked() {
+        if(locationsLoadFile != null) {
+            loadSavedAntCore(locationsLoadFile);
+            return;
+        }
         if (!loadRightBorderPaneData()) {
             displayAlert("Wrong data", "Right Pane");
             return;
@@ -418,12 +444,14 @@ public class ConfigurationController {
         Plane plane;
         List<Ant> antList;
         Map<Integer, SavableColor> colors;
+        Long currentSteps;
 
         try (ObjectInput locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
             controller = (Controller) locFile.readObject();
             plane = (Plane) locFile.readObject();
             antList = (List<Ant>) locFile.readObject();
             colors = (Map<Integer, SavableColor>) locFile.readObject();
+            currentSteps = (Long) locFile.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             displayAlert("File Incorrect", "Couldn't load a file");
@@ -439,6 +467,8 @@ public class ConfigurationController {
         Main.plane = plane;
         Main.antList = antList;
         Main.colorMap = colors;
+        Main.currentSteps = currentSteps;
+        Main.stepsLimit += currentSteps;
 
         Main.canvas = new Canvas(Main.plane.getPlaneSize() * 5, Main.plane.getPlaneSize() * 5);
         Main.graphicsContext = Main.canvas.getGraphicsContext2D();

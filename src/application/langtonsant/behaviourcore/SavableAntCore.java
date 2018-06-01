@@ -24,10 +24,10 @@ public abstract class SavableAntCore {
             }
         }
         Canvas canvas = graphicsContext.getCanvas();
-        graphicsContext.strokeLine(0+5, 0+5, canvas.getWidth()-5, 0+5);
-        graphicsContext.strokeLine(0+5, 0+5, 0+5, canvas.getHeight()-5);
-        graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, canvas.getWidth()-5, 0+5);
-        graphicsContext.strokeLine(canvas.getHeight()-5, canvas.getWidth()-5, 0+5, canvas.getHeight()-5);
+        graphicsContext.strokeLine(0+4, 0+4, canvas.getWidth()-4, 0+4);
+        graphicsContext.strokeLine(0+4, 0+4, 0+4, canvas.getHeight()-4);
+        graphicsContext.strokeLine(canvas.getHeight()-4, canvas.getWidth()-4, canvas.getWidth()-4, 0+4);
+        graphicsContext.strokeLine(canvas.getHeight()-4, canvas.getWidth()-4, 0+4, canvas.getHeight()-4);
     }
 
     protected void fillPlaneOnPosition(int x, int y) {
@@ -49,5 +49,5 @@ public abstract class SavableAntCore {
     }
 
     public abstract List<Ant> getAntList();
-    public abstract void run();
+    public abstract boolean run();
 }
