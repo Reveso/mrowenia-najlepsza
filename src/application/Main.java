@@ -1,7 +1,7 @@
 package application;
 
-import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.Controller;
+import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
 import application.langtonsant.behaviourcore.SavableAntCore;
 import application.langtonsant.entity.Ant;
@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -21,14 +22,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import javafx.util.converter.NumberStringConverter;
 
 import java.io.*;
 import java.util.List;
@@ -62,7 +62,7 @@ public class Main extends Application {
     }
 
     private void setupAnimationWindow(Stage primaryStage) {
-        if(canvas == null)
+        if (canvas == null)
             return;
 
         primaryStage.setTitle("Langton's Ant");
@@ -104,6 +104,7 @@ public class Main extends Application {
             timeline.pause();
 
             FileChooser fileChooser = new FileChooser();
+            fileChooser.initialDirectoryProperty().setValue(new File(System.getProperty("user.dir")));
             fileChooser.setTitle("Choose save location");
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter("Locations data", "*.dat"));
@@ -116,17 +117,29 @@ public class Main extends Application {
             pauseButton.setText("Play");
         });
 
-        backToSettingsButton.setOnMouseClicked(event -> resetApplication());
+        backToSettingsButton.setOnMouseClicked(event -> {
+            timeline.stop();
+            resetApplication();
+        });
 
         lowerHbox.getChildren().addAll(pauseButton, saveButton, backToSettingsButton, stepCountTextField);
         scrollPane.setContent(canvas);
         borderPane.setCenter(scrollPane);
         borderPane.setBottom(lowerHbox);
 
-        if(controller.equals(Controller.BASIC)) {
+        if (controller.equals(Controller.BASIC)) {
             currentAntCore = new BasicAntCore(plane, antList, colorMap, graphicsContext, 5);
-        } else if (controller.equals(Controller.CUSTOM)){
+        } else if (controller.equals(Controller.CUSTOM)) {
             currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap, graphicsContext, 5);
+        }
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double availableHeight = screenBounds.getHeight() * 3 / 4;
+        double stageHeight = primaryStage.getHeight();
+        if (availableHeight < stageHeight) {
+            primaryStage.setMaximized(false);
+            primaryStage.setMaximized(true);
+            primaryStage.toFront();
         }
 
         final SavableAntCore finalAntCore = currentAntCore;
@@ -134,9 +147,9 @@ public class Main extends Application {
                 new KeyFrame(
                         Duration.millis(refreshDelay),
                         event -> {
-                            if(finalAntCore.run()) {
+                            if (finalAntCore.run()) {
                                 currentSteps++;
-                                if(stepsLimit.equals(currentSteps)) {
+                                if (stepsLimit.equals(currentSteps)) {
                                     timeline.pause();
                                     pauseButton.setText("Play");
                                 }
@@ -173,7 +186,7 @@ public class Main extends Application {
 
     private void saveCurrentAntCore(SavableAntCore savableAntCore, File file) {
 
-        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))){
+        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
             locFile.writeObject(controller);
             locFile.writeObject(savableAntCore.getPlane());
             locFile.writeObject(savableAntCore.getAntList());

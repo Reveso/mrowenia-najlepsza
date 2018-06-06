@@ -108,7 +108,7 @@ public class ConfigurationController {
         colorQueue = new LinkedBlockingQueue<>();
         colorQueue.addAll(colorList);
 
-        Main.colorMap = new HashMap<>();
+        Main.colorMap = new LinkedHashMap<>();
         int i = 0;
         for (SavableColor color : colorList) {
             Main.colorMap.put(i, color);
@@ -259,13 +259,13 @@ public class ConfigurationController {
 
         selectFileLocationButton.setOnMouseClicked(event -> {
             FileChooser fileChooser = new FileChooser();
+            fileChooser.initialDirectoryProperty().setValue(new File(System.getProperty("user.dir")));
             fileChooser.setTitle("Open saved locations file");
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter("Locations data", "*.dat"));
 
             File selectedFile = fileChooser.showOpenDialog(stage);
             if (selectedFile != null) {
-//                loadSavedAntCore(selectedFile);
                 selectFileLocationTextField.setText(selectedFile.getAbsolutePath());
                 locationsLoadFile = selectedFile;
             }
@@ -373,6 +373,7 @@ public class ConfigurationController {
                 if (x > -1 && y > -1) {
                     Ant newAnt = new Ant(x, y);
                     newAnt.interpretBehaviourString(behaviourString);
+                    newAnt.setStartDirection();
                     Main.antList.add(newAnt);
                 }
             }

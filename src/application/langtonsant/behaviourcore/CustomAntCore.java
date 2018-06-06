@@ -24,7 +24,6 @@ public class CustomAntCore extends SavableAntCore {
         this.theOnlyAntThatMatters = theOnlyAntThatMatters;
 
         behaviourLimit = theOnlyAntThatMatters.behaviourArray.length;
-        theOnlyAntThatMatters.setStartDirection();
         preFillPlane();
     }
 

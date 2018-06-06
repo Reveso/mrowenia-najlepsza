@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="mrowenia_najlepsza.jar" size="24573" download="eager" />
+    <jar href="mrowenia_najlepsza.jar" size="26028" download="eager" />
   </resources>
   <jfx:javafx-desc  width="600" height="400" main-class="application.Main"  name="Mrowka Langtona by Malirosz" />
   <update check="background"/>

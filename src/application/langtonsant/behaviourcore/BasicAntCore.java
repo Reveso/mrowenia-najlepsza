@@ -19,11 +19,7 @@ public class BasicAntCore extends SavableAntCore {
         this.antList = antList;
         this.graphicsContext = graphicsContext;
         this.antRectangleSize = antRectangleSize;
-
-       for(Ant ant : antList) {
-           ant.setStartDirection();
-       }
-       preFillPlane();
+        preFillPlane();
     }
 
     private void antSetDirection(Ant ant) {
