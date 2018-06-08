@@ -1,10 +1,12 @@
-package application.configgui;
+package application.gui.config;
 
 import application.Main;
 import application.langtonsant.Controller;
 import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
+import application.langtonsant.entity.SetupConfiguration;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -35,21 +37,23 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ConfigurationController {
 
     @FXML
-    BorderPane borderPane;
+    private BorderPane borderPane;
     @FXML
-    GridPane gridPaneOne;
+    private GridPane gridPaneOne;
     @FXML
-    TextField behaviourStringTextField;
+    private TextField behaviourStringTextField;
     @FXML
-    Button okayButton;
+    private Button okayButton;
     @FXML
-    Button resetButton;
+    private Button resetButton;
 
     private int antCount;
     private Queue<SavableColor> colorQueue;
 
     private String behaviourString;
     private File locationsLoadFile;
+
+    private SetupConfiguration setupConfiguration;
 
     @FXML
     public void initialize() {
@@ -206,6 +210,7 @@ public class ConfigurationController {
     @FXML
     public void onBehaviourStringButtonMouseClicked() {
         locationsLoadFile = null;
+        setupConfiguration = new SetupConfiguration();
 
         String tempBehaviourString = behaviourStringTextField.getText().trim();
         if(!checkBehaviourString(tempBehaviourString)) {
@@ -243,6 +248,7 @@ public class ConfigurationController {
     @FXML
     public void onLoadPositionFromFileButtonMouseClicked() {
         locationsLoadFile = null;
+        setupConfiguration = new SetupConfiguration();
 
         gridPaneOne.getChildren().clear();
         borderPane.setLeft(null);
@@ -314,15 +320,19 @@ public class ConfigurationController {
             TextField textField = (TextField) node;
             try {
                 if (textField.getId().contains("delay")) {
-                    Main.refreshDelay = Integer.parseInt(textField.getText().trim());
-                    if (Main.refreshDelay < 1)
+                    int refreshDelay = Integer.parseInt(textField.getText().trim());
+                    if (refreshDelay < 1) {
                         return false;
+                    }
+                    Main.refreshDelay = refreshDelay;
+                    setupConfiguration.setRefreshDelay(refreshDelay);
                 } else if (textField.getId().contains("planeSize")) {
                     int planeSize = Integer.parseInt(textField.getText().trim());
                     if (planeSize < 1)
                         return false;
                     else {
                         Main.plane = new Plane(planeSize);
+                        setupConfiguration.setPlane(new Plane(planeSize));
                     }
                 } else if (textField.getId().contains("stepsLimit")) {
                     Long stepsLimit = Long.parseLong(textField.getText().trim());
@@ -330,6 +340,7 @@ public class ConfigurationController {
                         Main.stepsLimit = -1L;
                     }
                     Main.stepsLimit = stepsLimit;
+                    setupConfiguration.setStepsLimit(stepsLimit);
                 }
 
             } catch (Exception e) {
@@ -342,6 +353,7 @@ public class ConfigurationController {
 
     private boolean loadAntList() {
         Main.antList = new LinkedList<>();
+        setupConfiguration.setAntList(new LinkedList<>());
 
         for (Node gridPaneChild : gridPaneOne.getChildren()) {
             if (gridPaneChild.getClass().equals(HBox.class)) {
@@ -375,6 +387,7 @@ public class ConfigurationController {
                     newAnt.interpretBehaviourString(behaviourString);
                     newAnt.setStartDirection();
                     Main.antList.add(newAnt);
+                    setupConfiguration.getAntList().add(newAnt);
                 }
             }
         }
@@ -401,8 +414,8 @@ public class ConfigurationController {
         }
 
         Main.canvas = new Canvas(Main.plane.getPlaneSize() * 5, Main.plane.getPlaneSize() * 5);
-        Main.graphicsContext = Main.canvas.getGraphicsContext2D();
 
+        setupConfiguration.setComplete(true);
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
     }
@@ -411,7 +424,7 @@ public class ConfigurationController {
     public void onResetClicked() {
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("configurationGui.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("../animation/configurationGui.fxml"));
             stage.setTitle("Langton's Ant");
             stage.setScene(new Scene(root));
 
@@ -423,8 +436,8 @@ public class ConfigurationController {
     @FXML
     public void onExitClicked() {
         Main.canvas = null;
-        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
-        stage.close();
+        Platform.exit();
+        System.exit(0);
     }
 
     private boolean checkBehaviourString(String behaviourString) {
@@ -464,6 +477,16 @@ public class ConfigurationController {
             return;
         }
 
+        SetupConfiguration setupConfiguration = new SetupConfiguration();
+        setupConfiguration.setController(controller);
+        setupConfiguration.setPlane(plane);
+        setupConfiguration.setAntList(antList);
+        setupConfiguration.setColorMap(colors);
+        setupConfiguration.setCurrentSteps(currentSteps);
+        setupConfiguration.setStepsLimit(setupConfiguration.getStepsLimit() + currentSteps);
+
+        setupConfiguration.setComplete(true);
+
         Main.controller = controller;
         Main.plane = plane;
         Main.antList = antList;
@@ -472,7 +495,6 @@ public class ConfigurationController {
         Main.stepsLimit += currentSteps;
 
         Main.canvas = new Canvas(Main.plane.getPlaneSize() * 5, Main.plane.getPlaneSize() * 5);
-        Main.graphicsContext = Main.canvas.getGraphicsContext2D();
 
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
@@ -483,5 +505,9 @@ public class ConfigurationController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.showAndWait();
+    }
+
+    public SetupConfiguration getSetupConfiguration() {
+        return setupConfiguration;
     }
 }
