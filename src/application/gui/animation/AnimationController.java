@@ -1,6 +1,5 @@
 package application.gui.animation;
 
-import application.Main;
 import application.langtonsant.Controller;
 import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
@@ -8,25 +7,23 @@ import application.langtonsant.behaviourcore.SavableAntCore;
 import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
+import application.langtonsant.entity.SetupConfiguration;
+import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.print.URIException;
 import java.io.*;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class AnimationController {
 
@@ -46,20 +43,16 @@ public class AnimationController {
     private Timeline timeline;
     private SavableAntCore currentAntCore;
 
-    private int testValue;
+    public void setup(SetupConfiguration setupConfiguration) {
 
-    public void setup(int i) {
-        testValue = i;
+        int refreshDelay = setupConfiguration.getRefreshDelay();
+        List<Ant> antList = setupConfiguration.getAntList();
+        Map<Integer, SavableColor> colorMap = setupConfiguration.getColorMap();
+        Plane plane = setupConfiguration.getPlane();
+        stepsLimit = setupConfiguration.getStepsLimit();
+        currentSteps = setupConfiguration.getCurrentSteps();
+        controller = setupConfiguration.getController();
 
-        int refreshDelay = Main.refreshDelay;
-        List<Ant> antList = Main.antList;
-        Map<Integer, SavableColor> colorMap = Main.colorMap;
-        Plane plane = Main.plane;
-
-        stepsLimit = Main.stepsLimit;
-        currentSteps = Main.currentSteps;
-
-        controller = Main.controller;
         Canvas animationCanvas = new Canvas(plane.getPlaneSize() * 5, plane.getPlaneSize() * 5);
         animationScrollPane.setContent(animationCanvas);
 
@@ -88,18 +81,14 @@ public class AnimationController {
                         })
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-    }
-
-    public void initialize() {
-
+        stepCountTextField.setText("Steps: " + currentSteps);
     }
 
     @FXML
-    private void onPauseButtonMouseClicked() {
+    private void onPauseButtonAction() {
         if (pauseButton.getText().toLowerCase().equals("pause")) {
             timeline.pause();
-            pauseButton.setText("Pslay");
+            pauseButton.setText("Play");
         } else {
             timeline.play();
             pauseButton.setText("Pause");
@@ -155,11 +144,5 @@ public class AnimationController {
         alert.setHeaderText("Save has been completed successfully!");
         alert.showAndWait();
     }
-
-    public void setTest(int i) {
-        testValue = i;
-        System.out.println("SETTTTTTTTTTTTTTING");
-    }
-
 
 }

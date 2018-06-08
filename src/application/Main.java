@@ -2,74 +2,71 @@ package application;
 
 import application.gui.animation.AnimationController;
 import application.gui.config.ConfigurationController;
-import application.langtonsant.Controller;
-import application.langtonsant.entity.Ant;
-import application.langtonsant.entity.Plane;
-import application.langtonsant.entity.SavableColor;
+import application.langtonsant.entity.SetupConfiguration;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class Main extends Application {
-    public static int refreshDelay;
-    public static Long stepsLimit;
-    public static Long currentSteps;
-    public static List<Ant> antList;
-    public static Map<Integer, SavableColor> colorMap;
-    public static Canvas canvas;
-    public static Controller controller;
-    public static Plane plane;
+    private SetupConfiguration setupConfiguration;
 
     private void displayConfigDialog() throws IOException {
+
         Stage configStage = new Stage(StageStyle.UNIFIED);
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("gui/config/configurationGui.fxml"));
         Parent configRoot = fxmlLoader.load();
+
         ConfigurationController configurationController = fxmlLoader.getController();
 
         configStage.setTitle("Langton's Ant");
         configStage.setScene(new Scene(configRoot));
-        configStage.setOnCloseRequest(event -> {
-            Platform.exit();
-            System.exit(0);
-        });
+        configStage.setOnCloseRequest(event -> onStageCloseRequest());
         configStage.setResizable(false);
         configStage.showAndWait();
 
-
+        setupConfiguration = configurationController.getSetupConfiguration();
     }
 
     private void setupAnimationWindowNEW() throws IOException {
-        if (canvas == null)
+        if (setupConfiguration == null)
+            return;
+        if (!setupConfiguration.isComplete())
             return;
 
         Stage animationStage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("gui/animation/animationGUI.fxml"));
         Parent animationRoot = fxmlLoader.load();
+
         AnimationController animationController = fxmlLoader.getController();
-        animationController.setup(555);
+        animationController.setup(setupConfiguration);
         animationStage.setTitle("Langton's Ant");
-        animationStage.setScene(new Scene(animationRoot, canvas.getWidth() + 100, canvas.getWidth() + 100));
-        animationStage.setOnCloseRequest(event -> {
-            Platform.exit();
-            System.exit(0);
-        });
+
+        double sceneSize = (setupConfiguration.getPlane().getPlaneSize() * 5) + 100;
+        animationStage.setScene(new Scene(animationRoot, sceneSize, sceneSize));
+        animationStage.setOnCloseRequest(event -> onStageCloseRequest());
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double availableHeight = screenBounds.getHeight() * 3 / 4;
+        if (availableHeight < sceneSize) {
+            animationStage.setMaximized(false);
+            animationStage.setMaximized(true);
+            animationStage.toFront();
+        }
+
         animationStage.showAndWait();
     }
 
     private void startApp() throws IOException {
         while (true) {
             displayConfigDialog();
-
-
             setupAnimationWindowNEW();
         }
     }
@@ -83,4 +80,8 @@ public class Main extends Application {
         launch(args);
     }
 
+    private void onStageCloseRequest() {
+        Platform.exit();
+        System.exit(0);
+    }
 }

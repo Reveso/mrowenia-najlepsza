@@ -22,7 +22,7 @@
 
     <bottom>
         <HBox spacing="10">
-            <Button fx:id="pauseButton" text="Pause" onMouseClicked="#onPauseButtonMouseClicked"/>
+            <Button fx:id="pauseButton" text="Play" onAction="#onPauseButtonAction"/>
             <Button text="Save" onMouseClicked="#onSaveButtonMouseClicked"/>
             <Button text="Back to settings" onMouseClicked="#onBackButtonMouseClicked"/>
             <TextField fx:id="stepCountTextField"/>
