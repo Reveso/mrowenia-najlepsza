@@ -8,20 +8,19 @@ import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
 import application.langtonsant.entity.SetupConfiguration;
-import com.sun.org.apache.xml.internal.resolver.readers.ExtendedXMLCatalogReader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.print.URIException;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class AnimationController {
     @FXML
     private TextField stepCountTextField;
     @FXML
-    private ScrollPane animationScrollPane;
+    private Canvas animationCanvas;
 
     private Long stepsLimit;
     private Long currentSteps;
@@ -53,13 +52,13 @@ public class AnimationController {
         currentSteps = setupConfiguration.getCurrentSteps();
         controller = setupConfiguration.getController();
 
-        Canvas animationCanvas = new Canvas(plane.getPlaneSize() * 5, plane.getPlaneSize() * 5);
-        animationScrollPane.setContent(animationCanvas);
+        animationCanvas.setHeight(plane.getPlaneSize()*setupConfiguration.getAntSize());
+        animationCanvas.setWidth(plane.getPlaneSize()*setupConfiguration.getAntSize());
 
         if (controller.equals(Controller.BASIC)) {
-            currentAntCore = new BasicAntCore(plane, antList, colorMap, animationCanvas.getGraphicsContext2D(), 5);
+            currentAntCore = new BasicAntCore(plane, antList, colorMap, animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
         } else if (controller.equals(Controller.CUSTOM)) {
-            currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap, animationCanvas.getGraphicsContext2D(), 5);
+            currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap, animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
         }
 
         final SavableAntCore finalAntCore = currentAntCore;
@@ -117,6 +116,7 @@ public class AnimationController {
     @FXML
     private void onBackButtonMouseClicked() {
         timeline.stop();
+        timeline = null;
         Stage stage = (Stage) borderPane.getScene().getWindow();
         stage.close();
     }

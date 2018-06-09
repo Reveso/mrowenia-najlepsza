@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane fx:id="borderPane"
             xmlns="http://javafx.com/javafx/8.0.121"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -25,11 +26,10 @@
                     onKeyPressed="#onBehaviourStringButtonKeyPressed" text="OK"/>
             <Button onAction="#onLoadPositionFromFileButtonMouseClicked"
                     onKeyPressed="#onLoadPositionFromFileButtonKeyPressed" text="Load Saved"/>
-
         </HBox>
     </top>
     <center>
-        <ScrollPane hbarPolicy="NEVER">
+        <ScrollPane>
             <GridPane fx:id="gridPaneOne" alignment="CENTER" hgap="10" vgap="10">
                 <padding>
                     <Insets left="20" right="20"/>
@@ -37,6 +37,22 @@
             </GridPane>
         </ScrollPane>
     </center>
+
+    <right>
+        <VBox spacing="10">
+            <Label text="Delay per Refresh"/>
+            <TextField fx:id="delayTextField" text="1" prefWidth="25" prefHeight="25"/>
+
+            <Label text="Plane Size"/>
+            <TextField fx:id="planeSizeTextField" text="100" prefWidth="25" prefHeight="25"/>
+
+            <Label text="Steps Limit"/>
+            <TextField fx:id="stepsLimitTextField" text="0" prefWidth="25" prefHeight="25"/>
+
+            <Label text="Ant Size"/>
+            <TextField fx:id="antSizeTextField" text="5" prefWidth="25" prefHeight="25"/>
+        </VBox>
+    </right>
 
     <bottom>
         <HBox alignment="BOTTOM_RIGHT" spacing="10">

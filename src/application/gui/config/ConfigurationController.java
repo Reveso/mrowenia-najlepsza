@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -35,6 +34,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConfigurationController {
 
+
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -45,8 +45,17 @@ public class ConfigurationController {
     private Button okayButton;
     @FXML
     private Button resetButton;
+    @FXML
+    private TextField delayTextField;
+    @FXML
+    private TextField planeSizeTextField;
+    @FXML
+    private TextField stepsLimitTextField;
+    @FXML
+    private TextField antSizeTextField;
 
     private int antCount;
+    private Map<TextField, TextField> antTextFieldsMap;
     private Queue<SavableColor> colorQueue;
 
     private String behaviourString;
@@ -55,7 +64,7 @@ public class ConfigurationController {
     private SetupConfiguration setupConfiguration;
 
     @FXML
-    public void initialize() {
+    private void initialize() {
         setupConfiguration = new SetupConfiguration();
         antCount = 0;
         setupColorCollections();
@@ -131,17 +140,16 @@ public class ConfigurationController {
 
         Label label = new Label("Ant " + (antCount + 1));
         TextField xPosTextField = new TextField();
-        xPosTextField.setId("xPosTextField");
         xPosTextField.setPromptText("x");
         xPosTextField.setPrefWidth(40);
         xPosTextField.setPrefHeight(25);
 
         TextField yPosTextField = new TextField();
-        yPosTextField.setId("yPosTextField");
         yPosTextField.setPromptText("y");
         yPosTextField.setPrefWidth(40);
         yPosTextField.setPrefHeight(25);
 
+        antTextFieldsMap.put(xPosTextField, yPosTextField);
 
         startingPositionsTextFieldsHBox.getChildren().addAll(label, xPosTextField, yPosTextField);
 
@@ -162,7 +170,7 @@ public class ConfigurationController {
         BorderPane.setAlignment(startingPositionsLabel, Pos.CENTER);
         borderPane.setLeft(startingPositionsLabel);
 
-        setupBorderPaneRightChildren(true);
+        resetBorderPaneRightChildren(false);
         addAntPosFields();
     }
 
@@ -177,38 +185,18 @@ public class ConfigurationController {
         leftVBox.getChildren().addAll(startingPositionsLabel, addAntButton);
         borderPane.setLeft(leftVBox);
 
-        setupBorderPaneRightChildren(true);
-
+        resetBorderPaneRightChildren(false);
     }
 
-    private void setupBorderPaneRightChildren(boolean textFieldEnabled) {
-        VBox VBox = new VBox();
-        Label delayLabel = new Label("Delay per Refresh");
-        TextField delayTextField = new TextField("1");
-        delayTextField.setId("delayTextField");
-        delayTextField.setPrefHeight(25);
-        delayTextField.setPrefWidth(25);
-
-        Label planeSizeLabel = new Label("Plane Size");
-        TextField planeSizeTextField = new TextField("100");
-        planeSizeTextField.setId("planeSizeTextField");
-        planeSizeTextField.setPrefHeight(25);
-        planeSizeTextField.setPrefWidth(25);
-        planeSizeTextField.setDisable(!textFieldEnabled);
-
-        Label stepsLimitLabel = new Label("Steps limit");
-        TextField stepsLimitTextField = new TextField("0");
-        stepsLimitTextField.setId("stepsLimitTextField");
-        stepsLimitTextField.setPrefHeight(25);
-        stepsLimitTextField.setPrefWidth(25);
-
-        VBox.getChildren().addAll(delayLabel, delayTextField, planeSizeLabel, planeSizeTextField,
-                stepsLimitLabel, stepsLimitTextField);
-        borderPane.setRight(VBox);
+    private void resetBorderPaneRightChildren(boolean textFieldDisabled) {
+        stepsLimitTextField.setText("0");
+        delayTextField.setText("1");
+        planeSizeTextField.setText("100");
+        planeSizeTextField.setDisable(textFieldDisabled);
     }
 
     @FXML
-    public void onBehaviourStringButtonMouseClicked() {
+    private void onBehaviourStringButtonMouseClicked() {
         locationsLoadFile = null;
         setupConfiguration.setComplete(false);
 
@@ -226,6 +214,7 @@ public class ConfigurationController {
 
         gridPaneOne.getChildren().clear();
         antCount=0;
+        antTextFieldsMap = new LinkedHashMap<>();
         setupConfiguration.setCurrentSteps(0L);
 
         if (tempBehaviourString.equals("RL")) {
@@ -236,7 +225,6 @@ public class ConfigurationController {
             setupCustomBehaviourConfig();
         }
 
-
         behaviourString = tempBehaviourString;
         Stage stage = (Stage) borderPane.getScene().getWindow();
         stage.sizeToScene();
@@ -246,15 +234,17 @@ public class ConfigurationController {
     }
 
     @FXML
-    public void onLoadPositionFromFileButtonMouseClicked() {
+    private void onLoadPositionFromFileButtonMouseClicked() {
         locationsLoadFile = null;
         setupConfiguration.setComplete(false);
 
         gridPaneOne.getChildren().clear();
         borderPane.setLeft(null);
         antCount=0;
+        antTextFieldsMap = new LinkedHashMap<>();
 
-        setupBorderPaneRightChildren(false);
+
+        resetBorderPaneRightChildren(true);
 
         HBox loadFileHbox = new HBox(10);
         TextField selectFileLocationTextField = new TextField();
@@ -287,113 +277,96 @@ public class ConfigurationController {
     }
 
     @FXML
-    public void onLoadPositionFromFileButtonKeyPressed(KeyEvent keyEvent) {
+    private void onLoadPositionFromFileButtonKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onLoadPositionFromFileButtonMouseClicked();
     }
 
     @FXML
-    public void onBehaviourStringButtonKeyPressed(KeyEvent keyEvent) {
+    private void onBehaviourStringButtonKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onBehaviourStringButtonMouseClicked();
     }
 
     @FXML
-    public void onBehaviourStringTextFieldKeyPressed(KeyEvent keyEvent) {
+    private void onBehaviourStringTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onBehaviourStringButtonMouseClicked();
     }
 
     @FXML
-    public void onOkayKeyPressed(KeyEvent keyEvent) {
+    private void onOkayKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onOkayClicked();
     }
 
     private boolean loadRightBorderPaneData() {
-        VBox rightVBox = (VBox) borderPane.getRight();
-
-        for (Node node : rightVBox.getChildren()) {
-            if (!node.getClass().equals(TextField.class)) {
-                continue;
-            }
-            TextField textField = (TextField) node;
-            try {
-                if (textField.getId().contains("delay")) {
-                    int refreshDelay = Integer.parseInt(textField.getText().trim());
-                    if (refreshDelay < 1) {
-                        return false;
-                    }
-                    setupConfiguration.setRefreshDelay(refreshDelay);
-                } else if (textField.getId().contains("planeSize")) {
-                    int planeSize = Integer.parseInt(textField.getText().trim());
-                    if (planeSize < 1)
-                        return false;
-                    else {
-                        setupConfiguration.setPlane(new Plane(planeSize));
-                    }
-                } else if (textField.getId().contains("stepsLimit")) {
-                    Long stepsLimit = Long.parseLong(textField.getText().trim());
-                    if(stepsLimit < 1) {
-                        setupConfiguration.setStepsLimit(-1L);
-                    }
-                    setupConfiguration.setStepsLimit(stepsLimit);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            int refreshDelay = Integer.parseInt(delayTextField.getText().trim());
+            if (refreshDelay < 1) {
                 return false;
             }
+            setupConfiguration.setRefreshDelay(refreshDelay);
+
+            int planeSize = Integer.parseInt(planeSizeTextField.getText().trim());
+            if (planeSize < 1)
+                return false;
+            else {
+                setupConfiguration.setPlane(new Plane(planeSize));
+            }
+
+            Long stepsLimit = Long.parseLong(stepsLimitTextField.getText().trim());
+            if (stepsLimit < 1) {
+                setupConfiguration.setStepsLimit(-1L);
+            }
+            setupConfiguration.setStepsLimit(stepsLimit);
+
+            int antSize = Integer.parseInt(antSizeTextField.getText().trim());
+            if(antSize < 1) {
+                return false;
+            }
+            setupConfiguration.setAntSize(antSize);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
         }
         return true;
     }
 
     private boolean loadAntList() {
         setupConfiguration.setAntList(new LinkedList<>());
+        int planeSize = setupConfiguration.getPlane().getPlaneSize();
 
-        for (Node gridPaneChild : gridPaneOne.getChildren()) {
-            if (gridPaneChild.getClass().equals(HBox.class)) {
-                HBox hBox = (HBox) gridPaneChild;
-                int x = -1;
-                int y = -1;
+        for(TextField xTextField : antTextFieldsMap.keySet()) {
+            int x, y;
+            TextField yTextField = antTextFieldsMap.get(xTextField);
 
-                for (Node hBoxChild : hBox.getChildren()) {
-                    if (!hBoxChild.getClass().equals(TextField.class)) {
-                        continue;
-                    }
-                    TextField textField = (TextField) hBoxChild;
-                    System.out.println(textField.getId());
-                    try {
-                        if (textField.getId().contains("xPos")) {
-                            x = Integer.parseInt(textField.getText().trim());
-                            System.out.println("x: " + x);
-                        } else if (textField.getId().contains("yPos")) {
-                            y = Integer.parseInt(textField.getText().trim());
-                            System.out.println("y: " + y);
-                        }
-                    } catch (Exception e) {
-                        x = -1;
-                        y = -1;
-                        e.printStackTrace();
-                    }
-                }
+            try {
+                x = Integer.parseInt(xTextField.getText().trim());
+                y = Integer.parseInt(yTextField.getText().trim());
+            } catch (NumberFormatException e) {
+                x = -1;
+                y = -1;
+                e.printStackTrace();
+            }
 
-                if (x > -1 && y > -1) {
-                    Ant newAnt = new Ant(x, y);
-                    newAnt.interpretBehaviourString(behaviourString);
-                    newAnt.setStartDirection();
-                    setupConfiguration.getAntList().add(newAnt);
-                }
+            if (x > 0 && y > 0 && x < planeSize && y < planeSize) {
+                Ant newAnt = new Ant(x, y);
+                newAnt.interpretBehaviourString(behaviourString);
+                newAnt.setStartDirection();
+                setupConfiguration.getAntList().add(newAnt);
             }
         }
 
         if (setupConfiguration.getAntList().size() < 1) {
             return false;
         } else return true;
+
     }
 
     @FXML
-    public void onOkayClicked() {
+    private void onOkayClicked() {
         if(locationsLoadFile != null) {
             loadSavedAntCore(locationsLoadFile);
             return;
@@ -415,7 +388,7 @@ public class ConfigurationController {
     }
 
     @FXML
-    public void onResetClicked() {
+    private void onResetClicked() {
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("../animation/configurationGui.fxml"));
@@ -428,7 +401,7 @@ public class ConfigurationController {
     }
 
     @FXML
-    public void onExitClicked() {
+    private void onExitClicked() {
         Platform.exit();
         System.exit(0);
     }

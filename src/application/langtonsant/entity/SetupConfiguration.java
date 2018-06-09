@@ -8,13 +8,16 @@ import java.util.Map;
 public class SetupConfiguration {
     private boolean isComplete = false;
 
+    private int antSize;
     private int refreshDelay;
     private Long stepsLimit;
+
     private Long currentSteps;
     private List<Ant> antList;
     private Map<Integer, SavableColor> colorMap;
     private Controller controller;
     private Plane plane;
+
 
     public boolean isComplete() {
         return isComplete;
@@ -78,5 +81,13 @@ public class SetupConfiguration {
 
     public void setPlane(Plane plane) {
         this.plane = plane;
+    }
+
+    public int getAntSize() {
+        return antSize;
+    }
+
+    public void setAntSize(int antSize) {
+        this.antSize = antSize;
     }
 }

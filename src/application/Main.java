@@ -4,7 +4,6 @@ import application.gui.animation.AnimationController;
 import application.gui.config.ConfigurationController;
 import application.langtonsant.entity.SetupConfiguration;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -16,6 +15,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 
 public class Main extends Application {
+    private boolean quit;
     private SetupConfiguration setupConfiguration;
 
     private void displayConfigDialog() throws IOException {
@@ -49,7 +49,7 @@ public class Main extends Application {
         animationController.setup(setupConfiguration);
         animationStage.setTitle("Langton's Ant");
 
-        double sceneSize = (setupConfiguration.getPlane().getPlaneSize() * 5) + 100;
+        double sceneSize = (setupConfiguration.getPlane().getPlaneSize() * setupConfiguration.getAntSize()) + 100;
         animationStage.setScene(new Scene(animationRoot, sceneSize, sceneSize));
         animationStage.setOnCloseRequest(event -> onStageCloseRequest());
 
@@ -65,7 +65,7 @@ public class Main extends Application {
     }
 
     private void startApp() throws IOException {
-        while (true) {
+        while (!quit) {
             displayConfigDialog();
             setupAnimationWindowNEW();
         }
@@ -73,6 +73,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        quit = false;
         startApp();
     }
 
@@ -81,7 +82,6 @@ public class Main extends Application {
     }
 
     private void onStageCloseRequest() {
-        Platform.exit();
-        System.exit(0);
+        quit = true;
     }
 }
