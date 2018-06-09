@@ -2,8 +2,9 @@ package application;
 
 import application.gui.animation.AnimationController;
 import application.gui.config.ConfigurationController;
-import application.langtonsant.entity.SetupConfiguration;
+import application.langtonsant.entity.ConfigurationSetup;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 public class Main extends Application {
     private boolean quit;
-    private SetupConfiguration setupConfiguration;
+    private ConfigurationSetup configurationSetup;
 
     private void displayConfigDialog() throws IOException {
 
@@ -33,13 +34,13 @@ public class Main extends Application {
         configStage.setResizable(false);
         configStage.showAndWait();
 
-        setupConfiguration = configurationController.getSetupConfiguration();
+        configurationSetup = configurationController.getConfigurationSetup();
     }
 
     private void setupAnimationWindowNEW() throws IOException {
-        if (setupConfiguration == null)
+        if (configurationSetup == null)
             return;
-        if (!setupConfiguration.isComplete())
+        if (!configurationSetup.isComplete())
             return;
 
         Stage animationStage = new Stage();
@@ -48,11 +49,11 @@ public class Main extends Application {
         Parent animationRoot = fxmlLoader.load();
 
         AnimationController animationController = fxmlLoader.getController();
-        animationController.setup(setupConfiguration);
+        animationController.setup(configurationSetup);
         animationStage.setTitle("Langton's Ant");
 
-        int minimalSize = (setupConfiguration.getPlane().getPlaneSize() * 5) + 100;
-        int sceneSize = (setupConfiguration.getPlane().getPlaneSize() * setupConfiguration.getAntSize()) + 100;
+        int minimalSize = (configurationSetup.getPlane().getPlaneSize() * 5) + 100;
+        int sceneSize = (configurationSetup.getPlane().getPlaneSize() * configurationSetup.getAntSize()) + 100;
 
         if(sceneSize < minimalSize)
             sceneSize = minimalSize;
@@ -90,5 +91,7 @@ public class Main extends Application {
 
     private void onStageCloseRequest() {
         quit = true;
+        Platform.exit();
+        System.exit(0);
     }
 }

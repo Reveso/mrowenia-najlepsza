@@ -2,10 +2,11 @@ package application.langtonsant.entity;
 
 import application.langtonsant.Controller;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class SetupConfiguration {
+public class ConfigurationSetup {
     private boolean isComplete = false;
 
     private int antSize;

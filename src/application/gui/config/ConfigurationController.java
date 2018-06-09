@@ -4,7 +4,7 @@ import application.langtonsant.Controller;
 import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
-import application.langtonsant.entity.SetupConfiguration;
+import application.langtonsant.entity.ConfigurationSetup;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,11 +61,11 @@ public class ConfigurationController {
     private String behaviourString;
     private File locationsLoadFile;
 
-    private SetupConfiguration setupConfiguration;
+    private ConfigurationSetup configurationSetup;
 
     @FXML
     private void initialize() {
-        setupConfiguration = new SetupConfiguration();
+        configurationSetup = new ConfigurationSetup();
         antCount = 0;
         setupColorCollections();
     }
@@ -121,10 +121,10 @@ public class ConfigurationController {
         colorQueue = new LinkedBlockingQueue<>();
         colorQueue.addAll(colorList);
 
-        setupConfiguration.setColorMap(new LinkedHashMap<>());
+        configurationSetup.setColorMap(new LinkedHashMap<>());
         int i = 0;
         for (SavableColor color : colorList) {
-            setupConfiguration.getColorMap().put(i, color);
+            configurationSetup.getColorMap().put(i, color);
             i++;
         }
     }
@@ -198,7 +198,7 @@ public class ConfigurationController {
     @FXML
     private void onBehaviourStringButtonMouseClicked() {
         locationsLoadFile = null;
-        setupConfiguration.setComplete(false);
+        configurationSetup.setComplete(false);
 
         String tempBehaviourString = behaviourStringTextField.getText().trim();
         if(!checkBehaviourString(tempBehaviourString)) {
@@ -216,13 +216,13 @@ public class ConfigurationController {
         gridPaneOne.getChildren().clear();
         antCount=0;
         antTextFieldsMap = new LinkedHashMap<>();
-        setupConfiguration.setCurrentSteps(0L);
+        configurationSetup.setCurrentSteps(0L);
 
         if (tempBehaviourString.equals("RL")) {
-            setupConfiguration.setController(Controller.BASIC);
+            configurationSetup.setController(Controller.BASIC);
             setupBasicBehaviourConfig();
         } else {
-            setupConfiguration.setController(Controller.CUSTOM);
+            configurationSetup.setController(Controller.CUSTOM);
             setupCustomBehaviourConfig();
         }
 
@@ -237,7 +237,7 @@ public class ConfigurationController {
     @FXML
     private void onLoadPositionFromFileButtonMouseClicked() {
         locationsLoadFile = null;
-        setupConfiguration.setComplete(false);
+        configurationSetup.setComplete(false);
 
         gridPaneOne.getChildren().clear();
         borderPane.setLeft(null);
@@ -307,26 +307,26 @@ public class ConfigurationController {
             if (refreshDelay < 1) {
                 return false;
             }
-            setupConfiguration.setRefreshDelay(refreshDelay);
+            configurationSetup.setRefreshDelay(refreshDelay);
 
             int planeSize = Integer.parseInt(planeSizeTextField.getText().trim());
             if (planeSize < 1)
                 return false;
             else {
-                setupConfiguration.setPlane(new Plane(planeSize));
+                configurationSetup.setPlane(new Plane(planeSize));
             }
 
             Long stepsLimit = Long.parseLong(stepsLimitTextField.getText().trim());
             if (stepsLimit < 1) {
-                setupConfiguration.setStepsLimit(-1L);
+                configurationSetup.setStepsLimit(-1L);
             }
-            setupConfiguration.setStepsLimit(stepsLimit);
+            configurationSetup.setStepsLimit(stepsLimit);
 
             int antSize = Integer.parseInt(antSizeTextField.getText().trim());
             if(antSize < 1) {
                 return false;
             }
-            setupConfiguration.setAntSize(antSize);
+            configurationSetup.setAntSize(antSize);
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -336,8 +336,8 @@ public class ConfigurationController {
     }
 
     private boolean loadAntList() {
-        setupConfiguration.setAntList(new LinkedList<>());
-        int planeSize = setupConfiguration.getPlane().getPlaneSize();
+        configurationSetup.setAntList(new LinkedList<>());
+        int planeSize = configurationSetup.getPlane().getPlaneSize();
 
         for(TextField xTextField : antTextFieldsMap.keySet()) {
             int x, y;
@@ -356,11 +356,11 @@ public class ConfigurationController {
                 Ant newAnt = new Ant(x, y);
                 newAnt.interpretBehaviourString(behaviourString);
                 newAnt.setStartDirection();
-                setupConfiguration.getAntList().add(newAnt);
+                configurationSetup.getAntList().add(newAnt);
             }
         }
 
-        if (setupConfiguration.getAntList().size() < 1) {
+        if (configurationSetup.getAntList().size() < 1) {
             return false;
         } else return true;
 
@@ -383,7 +383,7 @@ public class ConfigurationController {
             return;
         }
 
-        setupConfiguration.setComplete(true);
+        configurationSetup.setComplete(true);
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
     }
@@ -443,14 +443,14 @@ public class ConfigurationController {
             return;
         }
 
-        setupConfiguration.setController(controller);
-        setupConfiguration.setPlane(plane);
-        setupConfiguration.setAntList(antList);
-        setupConfiguration.setColorMap(colors);
-        setupConfiguration.setCurrentSteps(currentSteps);
-        setupConfiguration.setStepsLimit(setupConfiguration.getStepsLimit() + currentSteps);
+        configurationSetup.setController(controller);
+        configurationSetup.setPlane(plane);
+        configurationSetup.setAntList(antList);
+        configurationSetup.setColorMap(colors);
+        configurationSetup.setCurrentSteps(currentSteps);
+        configurationSetup.setStepsLimit(configurationSetup.getStepsLimit() + currentSteps);
 
-        setupConfiguration.setComplete(true);
+        configurationSetup.setComplete(true);
 
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
@@ -463,7 +463,7 @@ public class ConfigurationController {
         alert.showAndWait();
     }
 
-    public SetupConfiguration getSetupConfiguration() {
-        return setupConfiguration;
+    public ConfigurationSetup getConfigurationSetup() {
+        return configurationSetup;
     }
 }

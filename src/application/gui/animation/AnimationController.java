@@ -1,14 +1,13 @@
 package application.gui.animation;
 
-import application.Main;
 import application.langtonsant.Controller;
 import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
 import application.langtonsant.behaviourcore.SavableAntCore;
 import application.langtonsant.entity.Ant;
+import application.langtonsant.entity.ConfigurationSetup;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
-import application.langtonsant.entity.SetupConfiguration;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -36,32 +35,31 @@ public class AnimationController {
     @FXML
     private Canvas animationCanvas;
 
-    private Long stepsLimit;
     private Long currentSteps;
     private Controller controller;
-
-    private Timeline timeline;
     private SavableAntCore currentAntCore;
 
-    public void setup(SetupConfiguration setupConfiguration) {
+    private Timeline timeline;
 
-        int refreshDelay = setupConfiguration.getRefreshDelay();
-        List<Ant> antList = setupConfiguration.getAntList();
-        Map<Integer, SavableColor> colorMap = setupConfiguration.getColorMap();
-        Plane plane = setupConfiguration.getPlane();
-        stepsLimit = setupConfiguration.getStepsLimit();
-        currentSteps = setupConfiguration.getCurrentSteps();
-        controller = setupConfiguration.getController();
+    public void setup(ConfigurationSetup configurationSetup) {
 
-        animationCanvas.setHeight(plane.getPlaneSize()*setupConfiguration.getAntSize());
-        animationCanvas.setWidth(plane.getPlaneSize()*setupConfiguration.getAntSize());
+        int refreshDelay = configurationSetup.getRefreshDelay();
+        List<Ant> antList = configurationSetup.getAntList();
+        Map<Integer, SavableColor> colorMap = configurationSetup.getColorMap();
+        Plane plane = configurationSetup.getPlane();
+        Long stepsLimit = configurationSetup.getStepsLimit();
+        currentSteps = configurationSetup.getCurrentSteps();
+        controller = configurationSetup.getController();
+
+        animationCanvas.setHeight(plane.getPlaneSize()*configurationSetup.getAntSize());
+        animationCanvas.setWidth(plane.getPlaneSize()*configurationSetup.getAntSize());
 
         if (controller.equals(Controller.BASIC)) {
             currentAntCore = new BasicAntCore(plane, antList, colorMap,
-                    animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
+                    animationCanvas.getGraphicsContext2D(), configurationSetup.getAntSize());
         } else if (controller.equals(Controller.CUSTOM)) {
             currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap,
-                    animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
+                    animationCanvas.getGraphicsContext2D(), configurationSetup.getAntSize());
         }
 
         final SavableAntCore finalAntCore = currentAntCore;

@@ -97,5 +97,4 @@ public class Ant implements Serializable {
         return id;
     }
 
-
 }
