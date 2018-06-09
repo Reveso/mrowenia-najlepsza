@@ -39,7 +39,7 @@
     </center>
 
     <right>
-        <VBox spacing="10">
+        <VBox>
             <Label text="Delay per Refresh"/>
             <TextField fx:id="delayTextField" text="1" prefWidth="25" prefHeight="25"/>
 

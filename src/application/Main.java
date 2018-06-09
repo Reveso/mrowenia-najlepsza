@@ -21,7 +21,8 @@ public class Main extends Application {
     private void displayConfigDialog() throws IOException {
 
         Stage configStage = new Stage(StageStyle.UNIFIED);
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("gui/config/configurationGui.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass()
+                .getResource("gui/config/configurationGui.fxml"));
         Parent configRoot = fxmlLoader.load();
 
         ConfigurationController configurationController = fxmlLoader.getController();
@@ -42,14 +43,20 @@ public class Main extends Application {
             return;
 
         Stage animationStage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("gui/animation/animationGUI.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass()
+                .getResource("gui/animation/animationGUI.fxml"));
         Parent animationRoot = fxmlLoader.load();
 
         AnimationController animationController = fxmlLoader.getController();
         animationController.setup(setupConfiguration);
         animationStage.setTitle("Langton's Ant");
 
-        double sceneSize = (setupConfiguration.getPlane().getPlaneSize() * setupConfiguration.getAntSize()) + 100;
+        int minimalSize = (setupConfiguration.getPlane().getPlaneSize() * 5) + 100;
+        int sceneSize = (setupConfiguration.getPlane().getPlaneSize() * setupConfiguration.getAntSize()) + 100;
+
+        if(sceneSize < minimalSize)
+            sceneSize = minimalSize;
+
         animationStage.setScene(new Scene(animationRoot, sceneSize, sceneSize));
         animationStage.setOnCloseRequest(event -> onStageCloseRequest());
 

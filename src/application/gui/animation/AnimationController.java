@@ -1,5 +1,6 @@
 package application.gui.animation;
 
+import application.Main;
 import application.langtonsant.Controller;
 import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
@@ -56,9 +57,11 @@ public class AnimationController {
         animationCanvas.setWidth(plane.getPlaneSize()*setupConfiguration.getAntSize());
 
         if (controller.equals(Controller.BASIC)) {
-            currentAntCore = new BasicAntCore(plane, antList, colorMap, animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
+            currentAntCore = new BasicAntCore(plane, antList, colorMap,
+                    animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
         } else if (controller.equals(Controller.CUSTOM)) {
-            currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap, animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
+            currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap,
+                    animationCanvas.getGraphicsContext2D(), setupConfiguration.getAntSize());
         }
 
         final SavableAntCore finalAntCore = currentAntCore;
@@ -123,7 +126,8 @@ public class AnimationController {
 
     private void saveCurrentAntCore(SavableAntCore savableAntCore, File file) {
 
-        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(
+                new FileOutputStream(file)))) {
             locFile.writeObject(controller);
             locFile.writeObject(savableAntCore.getPlane());
             locFile.writeObject(savableAntCore.getAntList());

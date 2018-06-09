@@ -203,7 +203,8 @@ public class ConfigurationController {
         String tempBehaviourString = behaviourStringTextField.getText().trim();
         if(!checkBehaviourString(tempBehaviourString)) {
             System.out.println(behaviourStringTextField.getText());
-            displayAlert("Wrong Behaviour String", "Behaviour String can only contain letters R and L");
+            displayAlert("Wrong Behaviour String",
+                    "Behaviour String can only contain letters R and L");
             return;
         }
 

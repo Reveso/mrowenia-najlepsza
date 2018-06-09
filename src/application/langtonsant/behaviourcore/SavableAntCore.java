@@ -24,6 +24,7 @@ public abstract class SavableAntCore {
             }
         }
         Canvas canvas = graphicsContext.getCanvas();
+        antRectangleSize--;
         graphicsContext.strokeLine(antRectangleSize, antRectangleSize, canvas.getWidth()-antRectangleSize,
                 antRectangleSize);
         graphicsContext.strokeLine(antRectangleSize, antRectangleSize, antRectangleSize,
@@ -32,6 +33,7 @@ public abstract class SavableAntCore {
                 canvas.getWidth()-antRectangleSize, antRectangleSize);
         graphicsContext.strokeLine(canvas.getHeight()-antRectangleSize, canvas.getWidth()-antRectangleSize,
                 antRectangleSize, canvas.getHeight()-antRectangleSize);
+        antRectangleSize++;
     }
 
     protected void fillPlaneOnPosition(int x, int y) {

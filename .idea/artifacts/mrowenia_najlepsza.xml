@@ -1,13 +1,13 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" name="Mrowka Langtona by Malirosz">
-    <output-path>$PROJECT_DIR$/out/artifacts/Mrowka_Langtona_by_Malirosz</output-path>
+  <artifact type="javafx" name="mrowenia-najlepsza">
+    <output-path>$PROJECT_DIR$/out/artifacts/mrowenia_najlepsza</output-path>
     <properties id="javafx-properties">
       <options>
         <option name="appClass" value="application.Main" />
         <option name="description" value="" />
         <option name="htmlPlaceholderId" value="" />
-        <option name="title" value="Mrowka Langtona by Malirosz" />
-        <option name="vendor" value="MaliRosz inc" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
         <option name="version" value="" />
       </options>
     </properties>
