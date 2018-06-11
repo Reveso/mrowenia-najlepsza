@@ -68,6 +68,14 @@ public class ConfigurationController {
         configurationSetup = new ConfigurationSetup();
         antCount = 0;
         setupColorCollections();
+
+        behaviourStringTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
+            if(!newValue.matches("[RLrl]+$")) {
+                behaviourStringTextField.setText(newValue.replaceAll("[^RLrl]", ""));
+            } else {
+                behaviourStringTextField.setText(newValue.toUpperCase());
+            }
+        }));
     }
 
     private void setupColorCollections() {
