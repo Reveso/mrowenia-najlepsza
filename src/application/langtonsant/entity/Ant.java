@@ -24,7 +24,7 @@ public class Ant implements Serializable {
     public Direction[] behaviourArray;
 
     /**
-     * zwraza obiekt mrówki o zadanych współrzędnych.
+     * Zwraca obiekt mrówki o zadanych współrzędnych.
      * @param x współrzędna x.
      * @param y współrzędna y.
      */
@@ -36,7 +36,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * metoda zmienia współrzędne mrówki w zalezności od kierunku
+     * Metoda zmienia współrzędne mrówki w zalezności od kierunku
      */
 
     public void antMove() {
@@ -59,7 +59,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * sprawdza, czy mrówka nie zderzyła się ze ścianą.
+     * Sprawdza, czy mrówka nie zderzyła się ze ścianą.
      * @param planeSize wielkość tablicy
      * @return true jeśli mrówka się zderzyla (wyszla poza zakres).
      */
@@ -72,7 +72,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * interpretuje wprowadzony ciąg liter reprezentujący zachnowanie mrówki.
+     * Interpretuje wprowadzony ciąg liter reprezentujący zachnowanie mrówki.
      * @param behaviourString ciąg z liter 'R' i 'L' opisujący zachowanie przy natrafieniu na konkretny kolor.
      */
     public void interpretBehaviourString (String behaviourString) {
@@ -88,7 +88,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * ustala początkowy kierunek mrówki.
+     * Ustala początkowy kierunek mrówki.
      */
 
     public void setStartDirection() {
@@ -126,7 +126,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * ustala kierunek.
+     * Ustala kierunek.
      * @param direction kierunek mrówki.
      */
     public void setDirection(int direction) {
@@ -143,7 +143,7 @@ public class Ant implements Serializable {
     }
 
     /**
-     * ustala active.
+     * Ustala active.
      * @param active wartość logiczna - true, jeśli mrowka wciąż w grze.
      */
 

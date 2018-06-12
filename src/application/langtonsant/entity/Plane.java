@@ -14,7 +14,7 @@ public class Plane implements Serializable {
     private int planeSize;
 
     /**
-     * zwraca mapę wartości o zadanej wielkości.
+     * Zwraca mapę wartości o zadanej wielkości.
      * @param size wielkość mapy wartości - mapa z założenia jest kwadratem.
      */
     public Plane(int size) {
@@ -27,7 +27,7 @@ public class Plane implements Serializable {
     }
 
     /**
-     * metoda wypisuje mapę wartości na konsolę
+     * Metoda wypisuje mapę wartości na konsolę
      */
 
     public void printPlane() {
@@ -68,7 +68,7 @@ public class Plane implements Serializable {
     }
 
     /**
-     * ustawia wartosc konkretnej komórki mapy wartości.
+     * Ustawia wartosc konkretnej komórki mapy wartości.
      * @param x współrzędna x.
      * @param y współrzędna y.
      * @param value wartość zadanej komórki.

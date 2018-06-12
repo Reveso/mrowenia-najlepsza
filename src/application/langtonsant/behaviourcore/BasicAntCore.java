@@ -40,7 +40,7 @@ public class BasicAntCore extends SavableAntCore {
 
     /**
      *
-     * ustawia kierunek kolejnego kroku dla mrówki.
+     * Ustawia kierunek kolejnego kroku dla mrówki.
      * @param ant mrówka, której kierunek ustawiamy.
      */
 
@@ -54,7 +54,7 @@ public class BasicAntCore extends SavableAntCore {
     }
 
     /**
-     * metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
+     * Metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
      * @param ant mrówka którą zaznacza się na mapie wartości.
      */
     private void antSetPlaneValue(Ant ant) {
@@ -66,7 +66,7 @@ public class BasicAntCore extends SavableAntCore {
     }
 
     /**
-     * wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
+     * Wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
      * @param ant mrówka, dla której wykonujemy ruch.
      */
 
@@ -80,7 +80,7 @@ public class BasicAntCore extends SavableAntCore {
     }
 
     /**
-     * metoda wykonuje ruch mrówki (antStep) dla każdej żywej mrówki.
+     * Metoda wykonuje ruch mrówki (antStep) dla każdej żywej mrówki.
      * @return zwraca wartość logiczną, która przyjmuje true, kiedy nie ma żywych mrówek.
      */
 

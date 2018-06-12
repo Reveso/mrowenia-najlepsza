@@ -43,7 +43,7 @@ public class CustomAntCore extends SavableAntCore {
     }
 
     /**
-     * metoda zmienia na mapie wartości miejsce na które mrówka weszła.
+     * Metoda zmienia na mapie wartości miejsce na które mrówka weszła.
      * @param ant mrówka wielokolorowa.
      */
 
@@ -54,7 +54,7 @@ public class CustomAntCore extends SavableAntCore {
 
     /**
      *
-     * ustawia kierunek kolejnego kroku dla mrówki.
+     * Ustawia kierunek kolejnego kroku dla mrówki.
      * @param ant mrówka, której kierunek ustawiamy.
      */
 
@@ -70,7 +70,7 @@ public class CustomAntCore extends SavableAntCore {
 
 
     /**
-     * metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
+     * Metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
      * @param ant mrówka którą zaznacza się na mapie wartości.
      */
 
@@ -82,7 +82,7 @@ public class CustomAntCore extends SavableAntCore {
     }
 
     /**
-     * wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
+     * Wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
      * @param ant mrówka, dla której wykonujemy ruch.
      */
 
