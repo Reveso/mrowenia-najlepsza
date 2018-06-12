@@ -6,6 +6,7 @@ import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
 import application.langtonsant.entity.ConfigurationSetup;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -33,8 +34,6 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConfigurationController {
-
-
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -70,12 +69,22 @@ public class ConfigurationController {
         setupColorCollections();
 
         behaviourStringTextField.textProperty().addListener(((observable, oldValue, newValue) -> {
-            if(!newValue.matches("[RLrl]+$")) {
+            if (!newValue.matches("[RLrl]+$")) {
                 behaviourStringTextField.setText(newValue.replaceAll("[^RLrl]", ""));
             } else {
                 behaviourStringTextField.setText(newValue.toUpperCase());
             }
         }));
+
+        delayTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, delayTextField));
+        planeSizeTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, planeSizeTextField));
+        stepsLimitTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, stepsLimitTextField));
+        antSizeTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, antSizeTextField));
+
     }
 
     private void setupColorCollections() {
@@ -152,10 +161,16 @@ public class ConfigurationController {
         xPosTextField.setPrefWidth(40);
         xPosTextField.setPrefHeight(25);
 
+        xPosTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, xPosTextField));
+
         TextField yPosTextField = new TextField();
         yPosTextField.setPromptText("y");
         yPosTextField.setPrefWidth(40);
         yPosTextField.setPrefHeight(25);
+
+        yPosTextField.textProperty().addListener((observable, oldValue, newValue) ->
+                numericTextFieldChanged(observable, oldValue, newValue, yPosTextField));
 
         antTextFieldsMap.put(xPosTextField, yPosTextField);
 
@@ -209,20 +224,20 @@ public class ConfigurationController {
         configurationSetup.setComplete(false);
 
         String tempBehaviourString = behaviourStringTextField.getText().trim();
-        if(!checkBehaviourString(tempBehaviourString)) {
+        if (!checkBehaviourString(tempBehaviourString)) {
             System.out.println(behaviourStringTextField.getText());
             displayAlert("Wrong Behaviour String",
                     "Behaviour String can only contain letters R and L");
             return;
         }
 
-        if(tempBehaviourString.length() > colorQueue.size()) {
+        if (tempBehaviourString.length() > colorQueue.size()) {
             displayAlert("Too long string", "Max length is: " + colorQueue.size());
             return;
         }
 
         gridPaneOne.getChildren().clear();
-        antCount=0;
+        antCount = 0;
         antTextFieldsMap = new LinkedHashMap<>();
         configurationSetup.setCurrentSteps(0L);
 
@@ -249,7 +264,7 @@ public class ConfigurationController {
 
         gridPaneOne.getChildren().clear();
         borderPane.setLeft(null);
-        antCount=0;
+        antCount = 0;
         antTextFieldsMap = new LinkedHashMap<>();
 
 
@@ -313,14 +328,16 @@ public class ConfigurationController {
         try {
             int refreshDelay = Integer.parseInt(delayTextField.getText().trim());
             if (refreshDelay < 1) {
+                displayAlert("Wrong data", "Refresh delay must be positive");
                 return false;
             }
             configurationSetup.setRefreshDelay(refreshDelay);
 
             int planeSize = Integer.parseInt(planeSizeTextField.getText().trim());
-            if (planeSize < 1)
+            if (planeSize < 1) {
+                displayAlert("Wrong data", "Plane size must be positive");
                 return false;
-            else {
+            } else {
                 configurationSetup.setPlane(new Plane(planeSize));
             }
 
@@ -331,13 +348,15 @@ public class ConfigurationController {
             configurationSetup.setStepsLimit(stepsLimit);
 
             int antSize = Integer.parseInt(antSizeTextField.getText().trim());
-            if(antSize < 1) {
+            if (antSize < 1) {
+                displayAlert("Wrong data", "Ant size must be positive");
                 return false;
             }
             configurationSetup.setAntSize(antSize);
 
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            System.err.println(e);
+            displayAlert("Wrong data", "Only numbers allowed in fields");
             return false;
         }
         return true;
@@ -347,7 +366,7 @@ public class ConfigurationController {
         configurationSetup.setAntList(new LinkedList<>());
         int planeSize = configurationSetup.getPlane().getPlaneSize();
 
-        for(TextField xTextField : antTextFieldsMap.keySet()) {
+        for (TextField xTextField : antTextFieldsMap.keySet()) {
             int x, y;
             TextField yTextField = antTextFieldsMap.get(xTextField);
 
@@ -357,7 +376,7 @@ public class ConfigurationController {
             } catch (NumberFormatException e) {
                 x = -1;
                 y = -1;
-                e.printStackTrace();
+                System.err.println(getClass() + "\n\t:" + e);
             }
 
             if (x > 0 && y > 0 && x < planeSize && y < planeSize) {
@@ -376,7 +395,7 @@ public class ConfigurationController {
 
     @FXML
     private void onOkayClicked() {
-        if(locationsLoadFile != null) {
+        if (locationsLoadFile != null) {
             loadSavedAntCore(locationsLoadFile);
             return;
         }
@@ -387,7 +406,7 @@ public class ConfigurationController {
         }
 
         if (!loadAntList()) {
-            displayAlert("Wrong data", "Ant List");
+            displayAlert("Wrong data", "Incorrect ants locations");
             return;
         }
 
@@ -442,7 +461,7 @@ public class ConfigurationController {
             currentSteps = (Long) locFile.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            displayAlert("File Incorrect", "Couldn't load a file");
+            displayAlert("Incorrect File", "Couldn't load a file");
             return;
         }
 
@@ -469,6 +488,13 @@ public class ConfigurationController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.showAndWait();
+    }
+
+    private void numericTextFieldChanged(ObservableValue<? extends String> observable,
+                                         String oldValue, String newValue, TextField numericTextField) {
+        if (!newValue.matches("\\d*")) {
+            numericTextField.setText(newValue.replaceAll("[^\\d]", ""));
+        }
     }
 
     public ConfigurationSetup getConfigurationSetup() {
