@@ -10,11 +10,26 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Klasa stanowi obsługę dla mrówki wielokolorowej.
+ */
 public class CustomAntCore extends SavableAntCore {
 
+    /**
+     * @param theOnlyAntThatMatters mrówka, którą klasa obsługuje.
+     * @param behaviourLimit
+     */
     private Ant theOnlyAntThatMatters;
     private int behaviourLimit;
 
+    /**
+     *
+     * @param plane wskazuje na klasę przechowującą tablicę wartości.
+     * @param theOnlyAntThatMatters obiekt mrówki kolorowej.
+     * @param colorMap przechowuje kolory odpowiadające konkretnym mrówkom.
+     * @param graphicsContext rysuje po planszy.
+     * @param antRectangleSize obiekt do zamalowywania komórek planszy.
+     */
     public CustomAntCore(Plane plane, Ant theOnlyAntThatMatters, Map<Integer, SavableColor> colorMap,
                          GraphicsContext graphicsContext, int antRectangleSize) {
         this.colors = colorMap;
@@ -27,10 +42,21 @@ public class CustomAntCore extends SavableAntCore {
         preFillPlane();
     }
 
+    /**
+     * metoda zmienia na mapie wartości miejsce na które mrówka weszła.
+     * @param ant mrówka wielokolorowa.
+     */
+
     private void markAsVisited(Ant ant){
         if(plane.getValueOnPosition(ant.getX(),ant.getY()) == -1)
             plane.setValueOnPosition(ant.getX(),ant.getY(),0);
     }
+
+    /**
+     *
+     * ustawia kierunek kolejnego kroku dla mrówki.
+     * @param ant mrówka, której kierunek ustawiamy.
+     */
 
     private void antSetDirection(Ant ant) {
          Direction nextDirection = ant.behaviourArray[plane.getValueOnPosition(ant.getX(), ant.getY())];
@@ -42,12 +68,23 @@ public class CustomAntCore extends SavableAntCore {
 
     }
 
+
+    /**
+     * metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
+     * @param ant mrówka którą zaznacza się na mapie wartości.
+     */
+
     private void antSetPlaneValue(Ant ant) {
         if(( plane.getValueOnPosition(ant.getX(), ant.getY()) +1 ) == behaviourLimit)
             plane.setValueOnPosition(ant.getX(), ant.getY(), 0);
         else
             plane.setValueOnPosition(ant.getX(), ant.getY(), (plane.getValueOnPosition(ant.getX(), ant.getY()) + 1));
     }
+
+    /**
+     * wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
+     * @param ant mrówka, dla której wykonujemy ruch.
+     */
 
     private void antStep (Ant ant) {
         markAsVisited(ant);
