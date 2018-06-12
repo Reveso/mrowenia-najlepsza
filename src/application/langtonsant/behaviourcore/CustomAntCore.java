@@ -16,19 +16,22 @@ import java.util.Map;
 public class CustomAntCore extends AbstractAntCore {
 
     /**
-     * @param theOnlyAntThatMatters mrówka, którą klasa obsługuje.
-     * @param behaviourLimit
+     * Mrówka poruszająca się po płaszczyźnie.
      */
     private Ant theOnlyAntThatMatters;
+    /**
+     * Długość ciągu zachowań mrówki.
+     */
     private int behaviourLimit;
 
     /**
-     *
-     * @param plane wskazuje na klasę przechowującą tablicę wartości.
-     * @param theOnlyAntThatMatters obiekt mrówki kolorowej.
+     * Konstruktor podane wartości i wypełniający początkowo planszę metodą preFillPlane().
+     * Dodatkowo ustala wartość behaviourLimit według długości behaviourArray.
+     * @param plane wskazuje na instancję płaszczyzny.
+     * @param theOnlyAntThatMatters jedyna mrówka, która będzie poruszać się na płaszczyźnie.
      * @param colorMap przechowuje kolory odpowiadające konkretnym mrówkom.
-     * @param graphicsContext rysuje po planszy.
-     * @param antRectangleSize obiekt do zamalowywania komórek planszy.
+     * @param graphicsContext kontekst graficzny płótna.
+     * @param antRectangleSize wielkość kwadratu reprezentującego mrówkę na płótnie.
      */
     public CustomAntCore(Plane plane, Ant theOnlyAntThatMatters, Map<Integer, SavableColor> colorMap,
                          GraphicsContext graphicsContext, int antRectangleSize) {
@@ -43,8 +46,9 @@ public class CustomAntCore extends AbstractAntCore {
     }
 
     /**
-     * Metoda zmienia na mapie wartości miejsce na które mrówka weszła.
-     * @param ant mrówka wielokolorowa.
+     * Metoda zmienia na wartość na płaszczyźnie jeśli jest ona równa -1 ->
+     * oznacza że mrówka chociaż raz była na tym polu.
+     * @param ant mrówka będąca na polu.
      */
     private void markAsVisited(Ant ant){
         if(plane.getValueOnPosition(ant.getX(),ant.getY()) == -1)
@@ -52,8 +56,7 @@ public class CustomAntCore extends AbstractAntCore {
     }
 
     /**
-     *
-     * Ustawia kierunek kolejnego kroku dla mrówki.
+     * Ustawia kierunek mrówki według obecnego kierunku mrówki oraz wartości płaszczyzny na pozycji mrówki.
      * @param ant mrówka, której kierunek ustawiamy.
      */
     private void antSetDirection(Ant ant) {
@@ -66,12 +69,10 @@ public class CustomAntCore extends AbstractAntCore {
 
     }
 
-
     /**
-     * Metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
+     * Metoda zaznacza na płaszczyźnie wartość mrówki według jej tablicy zachowań.
      * @param ant mrówka którą zaznacza się na mapie wartości.
      */
-
     private void antSetPlaneValue(Ant ant) {
         if(( plane.getValueOnPosition(ant.getX(), ant.getY()) +1 ) == behaviourLimit)
             plane.setValueOnPosition(ant.getX(), ant.getY(), 0);

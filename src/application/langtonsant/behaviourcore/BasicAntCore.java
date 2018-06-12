@@ -9,25 +9,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Klasa stanowi obsługę dla wielu mrówek.
+ * Klasa jądra obsługi wielu mrówek poruszających się po planszy.
  */
 
 public class BasicAntCore extends AbstractAntCore {
 
     /**
-     * @param antList przechowuje mrówki.
+     * Lista mrówek poruszających się po planszy.
      */
     private List<Ant> antList;
 
     /**
-     *
-     * @param plane wskazuje na klasę przechowującą tablicę wartości.
-     * @param antList kontener przechowujący mrówki.
+     * Konstruktor podane wartości i wypełniający początkowo planszę metodą preFillPlane().
+     * @param plane wskazuje na instancję płaszczyzny.
+     * @param antList lista mrówek.
      * @param colorMap przechowuje kolory odpowiadające konkretnym mrówkom.
-     * @param graphicsContext rysuje po planszy.
-     * @param antRectangleSize obiekt do zamalowywania komórek planszy.
+     * @param graphicsContext kontekst graficzny płótna.
+     * @param antRectangleSize wielkość kwadratu reprezentującego mrówkę na płótnie.
      */
-
     public BasicAntCore(Plane plane, List<Ant> antList, Map<Integer, SavableColor> colorMap,
                         GraphicsContext graphicsContext, int antRectangleSize) {
         this.colors = colorMap;
@@ -39,11 +38,9 @@ public class BasicAntCore extends AbstractAntCore {
     }
 
     /**
-     *
-     * Ustawia kierunek kolejnego kroku dla mrówki.
+     * Ustawia kierunek mrówki według obecnego kierunku mrówki oraz wartości płaszczyzny na pozycji mrówki.
      * @param ant mrówka, której kierunek ustawiamy.
      */
-
     private void antSetDirection(Ant ant) {
         int nextDirection = plane.getValueOnPosition(ant.getX(), ant.getY());
         if (nextDirection == -1) //bialy - w prawo
@@ -55,7 +52,7 @@ public class BasicAntCore extends AbstractAntCore {
 
     /**
      * Metoda zaznacza na mapie wartości identyfikator mrówki dla współrzędnej odpowiadającej lokalizacji mrówki.
-     * @param ant mrówka którą zaznacza się na mapie wartości.
+     * @param ant mrówka którą zaznacza się na płaszczyźnie.
      */
     private void antSetPlaneValue(Ant ant) {
         if (plane.getValueOnPosition(ant.getX(), ant.getY()) == -1) {
@@ -69,7 +66,6 @@ public class BasicAntCore extends AbstractAntCore {
      * Wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
      * @param ant mrówka, dla której wykonujemy ruch.
      */
-
     private void antStep(Ant ant) {
         antSetPlaneValue(ant);
 
@@ -83,7 +79,6 @@ public class BasicAntCore extends AbstractAntCore {
      * Metoda wykonuje ruch mrówki (antStep) dla każdej żywej mrówki.
      * @return zwraca wartość logiczną, która przyjmuje true, kiedy nie ma żywych mrówek.
      */
-
     private boolean iterateThroughAntList() {
         boolean anyMove = false;
 
@@ -99,11 +94,19 @@ public class BasicAntCore extends AbstractAntCore {
         return anyMove;
     }
 
+    /**
+     * Ustala akcję dla jednego wywołania metody run przez timeline.
+     * @return true jeśli chociaż jedna mrówka nadal jest aktywna.
+     */
     @Override
     public boolean run() {
         return iterateThroughAntList();
     }
 
+    /**
+     * Zwraca listę mrówek antList.
+     * @return lista antList.
+     */
     @Override
     public List<Ant> getAntList() {
         return antList;
