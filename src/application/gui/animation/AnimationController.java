@@ -3,7 +3,7 @@ package application.gui.animation;
 import application.langtonsant.CoreType;
 import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
-import application.langtonsant.behaviourcore.SavableAntCore;
+import application.langtonsant.behaviourcore.AbstractAntCore;
 import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.ConfigurationSetup;
 import application.langtonsant.entity.Plane;
@@ -46,7 +46,7 @@ public class AnimationController {
     /**
      * Bieżące jądro animacji.
      */
-    private SavableAntCore currentAntCore;
+    private AbstractAntCore currentAntCore;
     /**
      * Timeline na którym odbywa się animacja.
      */
@@ -77,7 +77,7 @@ public class AnimationController {
                     animationCanvas.getGraphicsContext2D(), configurationSetup.getAntSize());
         }
 
-        final SavableAntCore finalAntCore = currentAntCore;
+        final AbstractAntCore finalAntCore = currentAntCore;
         timeline = new Timeline(
                 new KeyFrame(
                         Duration.millis(refreshDelay),
@@ -154,17 +154,17 @@ public class AnimationController {
 
     /**
      * Zapisuje jądro abstractAntCore w lokacji file.
-     * @param savableAntCore Jądro do zapisu.
+     * @param abstractAntCore Jądro do zapisu.
      * @param file Lokalizacja zapisu.
      */
-    private void saveCurrentAntCore(SavableAntCore savableAntCore, File file) {
+    private void saveCurrentAntCore(AbstractAntCore abstractAntCore, File file) {
 
         try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(
                 new FileOutputStream(file)))) {
             locFile.writeObject(coreType);
-            locFile.writeObject(savableAntCore.getPlane());
-            locFile.writeObject(savableAntCore.getAntList());
-            locFile.writeObject(savableAntCore.getColorList());
+            locFile.writeObject(abstractAntCore.getPlane());
+            locFile.writeObject(abstractAntCore.getAntList());
+            locFile.writeObject(abstractAntCore.getColorList());
             locFile.writeObject(currentSteps);
         } catch (IOException e) {
             e.printStackTrace();

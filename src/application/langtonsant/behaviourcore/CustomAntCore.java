@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Klasa stanowi obsługę dla mrówki wielokolorowej.
  */
-public class CustomAntCore extends SavableAntCore {
+public class CustomAntCore extends AbstractAntCore {
 
     /**
      * @param theOnlyAntThatMatters mrówka, którą klasa obsługuje.
@@ -46,7 +46,6 @@ public class CustomAntCore extends SavableAntCore {
      * Metoda zmienia na mapie wartości miejsce na które mrówka weszła.
      * @param ant mrówka wielokolorowa.
      */
-
     private void markAsVisited(Ant ant){
         if(plane.getValueOnPosition(ant.getX(),ant.getY()) == -1)
             plane.setValueOnPosition(ant.getX(),ant.getY(),0);
@@ -57,7 +56,6 @@ public class CustomAntCore extends SavableAntCore {
      * Ustawia kierunek kolejnego kroku dla mrówki.
      * @param ant mrówka, której kierunek ustawiamy.
      */
-
     private void antSetDirection(Ant ant) {
          Direction nextDirection = ant.behaviourArray[plane.getValueOnPosition(ant.getX(), ant.getY())];
             if (nextDirection.equals(Direction.RIGHT)) // - w prawo
@@ -85,7 +83,6 @@ public class CustomAntCore extends SavableAntCore {
      * Wywołuje metody odpowiedzialne za jeden krok (cykl) mrówki
      * @param ant mrówka, dla której wykonujemy ruch.
      */
-
     private void antStep (Ant ant) {
         markAsVisited(ant);
         antSetPlaneValue(ant);
@@ -97,6 +94,10 @@ public class CustomAntCore extends SavableAntCore {
         antSetDirection(ant);
     }
 
+    /**
+     * Ustala akcję dla jednego wywołania metody run przez timeline.
+     * @return true jeśli mrówka jest nadal aktywna.
+     */
     @Override
     public boolean run() {
         theOnlyAntThatMatters.setActive(!theOnlyAntThatMatters.checkIfCrashed(plane.getPlaneSize()));
@@ -107,6 +108,10 @@ public class CustomAntCore extends SavableAntCore {
         return theOnlyAntThatMatters.isActive();
     }
 
+    /**
+     * Pakuje mrówkę chodzącą po płaszczyźnie do listy i zwraca ją.
+     * @return jednoelementowa lista mrówek.
+     */
     @Override
     public List<Ant> getAntList() {
         List<Ant> antList = new LinkedList<>();

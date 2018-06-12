@@ -12,9 +12,8 @@ import java.util.Map;
 
 /**
  * Abstrakcyjna klasa jądra mrówki langtona. Posiada wymagane, chronione oraz publiczne właściwości i metody.
- *
  */
-public abstract class SavableAntCore {
+public abstract class AbstractAntCore {
 
     /**
      * Rozmiar kwadratu mrówek na płótnie.

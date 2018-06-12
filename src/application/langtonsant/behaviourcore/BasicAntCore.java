@@ -12,7 +12,7 @@ import java.util.Map;
  * Klasa stanowi obsługę dla wielu mrówek.
  */
 
-public class BasicAntCore extends SavableAntCore {
+public class BasicAntCore extends AbstractAntCore {
 
     /**
      * @param antList przechowuje mrówki.

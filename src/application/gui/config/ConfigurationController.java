@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
 public class ConfigurationController {
     @FXML
     private BorderPane borderPane;
@@ -54,16 +55,38 @@ public class ConfigurationController {
     @FXML
     private TextField antSizeTextField;
 
+    /**
+     * Ilość pól tekstowych mrówek.
+     */
     private int antCount;
+    /**
+     * Mapa pól tekstowych z pozycjami mrówek.
+     * Key - pozycja x, wartość - pozycja y.
+     */
     private Map<TextField, TextField> antTextFieldsMap;
+    /**
+     * Kolejka dostępnych kolorów.
+     */
     private Queue<SavableColor> colorQueue;
 
+    /**
+     * Ciąg zachowań mrówki/mrówek.
+     */
     private String behaviourString;
+    /**
+     * Pozycja odczytu z pliku.
+     */
     private File locationsLoadFile;
 
+    /**
+     * Konfiguracja animacji.
+     */
     private ConfigurationSetup configurationSetup;
 
 
+    /**
+     * Initializuje okienko.
+     */
     @FXML
     private void initialize() {
         configurationSetup = new ConfigurationSetup();
@@ -89,6 +112,9 @@ public class ConfigurationController {
 
     }
 
+    /**
+     * Wypełnia kolejkę kolorów.
+     */
     private void setupColorCollections() {
         colorQueue = new LinkedBlockingQueue<>();
         colorQueue.add(new SavableColor(Color.BLUE));
@@ -134,6 +160,9 @@ public class ConfigurationController {
         shuffleQueue();
     }
 
+    /**
+     * Miesza kolejkę kolorów.
+     */
     private void shuffleQueue() {
         List<SavableColor> colorList = new ArrayList<>(colorQueue);
         Collections.shuffle(colorList);
@@ -148,6 +177,10 @@ public class ConfigurationController {
         }
     }
 
+    /**
+     * Dodaje podpis i pola współrzędnych x, y dla kolejnej mrówki, oraz
+     * zapisuje pola do mapy antTextFieldsMap.
+     */
     private void addAntPosFields() {
         if (antCount + 1 > colorQueue.size()) {
             displayAlert("Too much Ants", "Cannot add more Ants");
@@ -190,6 +223,9 @@ public class ConfigurationController {
         antCount++;
     }
 
+    /**
+     * Ustawia dalszą konfigurację dla ciągu innego niż RL
+     */
     private void setupCustomBehaviourConfig() {
         Label startingPositionsLabel = new Label("Ant's starting position");
         BorderPane.setAlignment(startingPositionsLabel, Pos.CENTER);
@@ -199,6 +235,9 @@ public class ConfigurationController {
         addAntPosFields();
     }
 
+    /**
+     * Ustawia dalszą konfigurację dla ciągu RL
+     */
     private void setupBasicBehaviourConfig() {
         VBox leftVBox = new VBox(10);
         Label startingPositionsLabel = new Label("Ant's starting position");
@@ -213,6 +252,10 @@ public class ConfigurationController {
         resetBorderPaneRightChildren(false);
     }
 
+    /**
+     * Resetuje dzieci z prawej strony instancji BorderPane do stanu początkowego.
+     * @param textFieldDisabled true żeby wyłączyć pole tekstowe z rozmiarem płaszczyzny.
+     */
     private void resetBorderPaneRightChildren(boolean textFieldDisabled) {
         stepsLimitTextField.setText("0");
         delayTextField.setText("1");
@@ -221,6 +264,10 @@ public class ConfigurationController {
         antSizeTextField.setText("5");
     }
 
+    /**
+     * Handler akcji onMouseClicked dla przycisku behaviourStringButton.
+     * Ustawia okno dla dalszej konfiguracji w tym przypadku.
+     */
     @FXML
     private void onBehaviourStringButtonMouseClicked() {
         locationsLoadFile = null;
@@ -260,6 +307,10 @@ public class ConfigurationController {
         resetButton.setDisable(false);
     }
 
+    /**
+     * Handler akcji onMouseClicked dla przycisku loadPositionFromFile.
+     * Ustawia okno dla dalszej konfiguracji w tym przypadku.
+     */
     @FXML
     private void onLoadPositionFromFileButtonMouseClicked() {
         locationsLoadFile = null;
@@ -303,30 +354,54 @@ public class ConfigurationController {
         resetButton.setDisable(false);
     }
 
+    /**
+     * Handler akcji onKeyPressed dla przycisku loadPositionFromFile.
+     * Dla entera uruchamia metodę onLoadPositionFromFileButtonMouseClicked().
+     * @param keyEvent
+     */
     @FXML
     private void onLoadPositionFromFileButtonKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onLoadPositionFromFileButtonMouseClicked();
     }
 
+    /**
+     * Handler akcji onKeyPressed dla przycisku behaviourStringButton.
+     * Dla entera uruchamia metodę onBehaviourStringButtonMouseClicked().
+     * @param keyEvent
+     */
     @FXML
     private void onBehaviourStringButtonKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onBehaviourStringButtonMouseClicked();
     }
 
+    /**
+     * Handler akcji onKeyPressed dla pola tekstowego behaviourStringTextField.
+     * Dla entera uruchamia metodę onBehaviourStringTextFieldKeyPressed().
+     * @param keyEvent
+     */
     @FXML
     private void onBehaviourStringTextFieldKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onBehaviourStringButtonMouseClicked();
     }
 
+    /**
+     * Handler akcji onKeyPressed dla przycisku Okay.
+     * Dla entera uruchamia metodę onOkayClicked().
+     * @param keyEvent
+     */
     @FXML
     private void onOkayKeyPressed(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER))
             onOkayClicked();
     }
 
+    /**
+     * Laduje dane z prawej strony BorderPane.
+     * @return false jeśli dane byly niepoprawne.
+     */
     private boolean loadRightBorderPaneData() {
         try {
             int refreshDelay = Integer.parseInt(delayTextField.getText().trim());
@@ -365,6 +440,10 @@ public class ConfigurationController {
         return true;
     }
 
+    /**
+     * Laduje liste mrowek z centrum instancji BorderPane.
+     * @return true jesli wspolrzedne przynajmniej jednej mrówki zostaly wczytane prawidlowo.
+     */
     private boolean loadAntList() {
         configurationSetup.setAntList(new LinkedList<>());
         int planeSize = configurationSetup.getPlane().getPlaneSize();
@@ -396,6 +475,10 @@ public class ConfigurationController {
 
     }
 
+    /**
+     * Handler akcji onClick dla przycisku Okay.
+     * Laduje ustawienia i uruchamia okno animacji metodą setupAnimationWindow().
+     */
     @FXML
     private void onOkayClicked() {
         if (locationsLoadFile != null) {
@@ -419,29 +502,30 @@ public class ConfigurationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
-//        stage.close();
     }
 
+    /**
+     * Handler akcji onClick dla przycisku Reset.
+     * Czyści okno.
+     */
     @FXML
     private void onResetClicked() {
-        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("../animation/configurationGui.fxml"));
-            stage.setTitle("Langton's Ant");
-            stage.setScene(new Scene(root));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        clearWindow();
     }
 
+    /**
+     * Handler akcji onClick dla przycisku Exit.
+     */
     @FXML
     private void onExitClicked() {
-        Platform.exit();
-        System.exit(0);
+        onStageCloseRequest();
     }
 
+    /**
+     * Sprawdza czy ciąg składa się tylko z liter R oraz L.
+     * @param behaviourString ciąg zachowania mrówki/mrówek.
+     * @return true jeśli ciąg poprawny.
+     */
     private boolean checkBehaviourString(String behaviourString) {
         if (behaviourString == null) return false;
         if (behaviourString.length() < 2) return false;
@@ -454,6 +538,10 @@ public class ConfigurationController {
         return true;
     }
 
+    /**
+     * Laduje konfigurację z podanego pliku.
+     * @param file zapisany plik z konfiguracją.
+     */
     private void loadSavedAntCore(File file) {
         CoreType coreType;
         Plane plane;
@@ -522,7 +610,7 @@ public class ConfigurationController {
             sceneSize = minimalSize;
 
         animationStage.setScene(new Scene(animationRoot, sceneSize, sceneSize));
-        animationStage.setOnCloseRequest(event -> onStageCloseRequest());
+        animationStage.setOnCloseRequest(event -> onExitClicked());
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double availableHeight = screenBounds.getHeight() * 3 / 4;
@@ -539,6 +627,9 @@ public class ConfigurationController {
         stage.show();
     }
 
+    /**
+     * Czyści okno, ustawia domyślne wartości.
+     */
     private void clearWindow() {
         configurationSetup = new ConfigurationSetup();
         configurationSetup.setCurrentSteps(0L);
@@ -558,6 +649,11 @@ public class ConfigurationController {
     }
 
 
+    /**
+     * Wyświetla alert ostrzeżenia.
+     * @param title tytuł ostrzeżenia.
+     * @param header nagłówek ostrzeżenia.
+     */
     private void displayAlert(String title, String header) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -565,6 +661,13 @@ public class ConfigurationController {
         alert.showAndWait();
     }
 
+    /**
+     * Nie pozwala na wpisanie wartości innej niż cyfra do podanej instancji TextField.
+     * @param observable
+     * @param oldValue
+     * @param newValue
+     * @param numericTextField instancja obiektu w którym blokuje się inne wartości niż numeryczne.
+     */
     private void numericTextFieldChanged(ObservableValue<? extends String> observable,
                                          String oldValue, String newValue, TextField numericTextField) {
         if (!newValue.matches("\\d*")) {
@@ -572,6 +675,9 @@ public class ConfigurationController {
         }
     }
 
+    /**
+     * Kończy działanie aplikacji.
+     */
     private void onStageCloseRequest() {
         Platform.exit();
         System.exit(0);
