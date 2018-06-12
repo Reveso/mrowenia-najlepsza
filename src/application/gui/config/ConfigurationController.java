@@ -1,6 +1,7 @@
 package application.gui.config;
 
-import application.langtonsant.Controller;
+import application.gui.animation.AnimationController;
+import application.langtonsant.CoreType;
 import application.langtonsant.entity.Ant;
 import application.langtonsant.entity.Plane;
 import application.langtonsant.entity.SavableColor;
@@ -61,6 +62,7 @@ public class ConfigurationController {
     private File locationsLoadFile;
 
     private ConfigurationSetup configurationSetup;
+
 
     @FXML
     private void initialize() {
@@ -216,6 +218,7 @@ public class ConfigurationController {
         delayTextField.setText("1");
         planeSizeTextField.setText("100");
         planeSizeTextField.setDisable(textFieldDisabled);
+        antSizeTextField.setText("5");
     }
 
     @FXML
@@ -242,10 +245,10 @@ public class ConfigurationController {
         configurationSetup.setCurrentSteps(0L);
 
         if (tempBehaviourString.equals("RL")) {
-            configurationSetup.setController(Controller.BASIC);
+            configurationSetup.setCoreType(CoreType.BASIC);
             setupBasicBehaviourConfig();
         } else {
-            configurationSetup.setController(Controller.CUSTOM);
+            configurationSetup.setCoreType(CoreType.CUSTOM);
             setupCustomBehaviourConfig();
         }
 
@@ -411,8 +414,13 @@ public class ConfigurationController {
         }
 
         configurationSetup.setComplete(true);
-        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
-        stage.close();
+        try {
+            setupAnimationWindow();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        Stage stage = (Stage) gridPaneOne.getScene().getWindow();
+//        stage.close();
     }
 
     @FXML
@@ -447,14 +455,14 @@ public class ConfigurationController {
     }
 
     private void loadSavedAntCore(File file) {
-        Controller controller;
+        CoreType coreType;
         Plane plane;
         List<Ant> antList;
         Map<Integer, SavableColor> colors;
         Long currentSteps;
 
         try (ObjectInput locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
-            controller = (Controller) locFile.readObject();
+            coreType = (CoreType) locFile.readObject();
             plane = (Plane) locFile.readObject();
             antList = (List<Ant>) locFile.readObject();
             colors = (Map<Integer, SavableColor>) locFile.readObject();
@@ -470,7 +478,7 @@ public class ConfigurationController {
             return;
         }
 
-        configurationSetup.setController(controller);
+        configurationSetup.setCoreType(coreType);
         configurationSetup.setPlane(plane);
         configurationSetup.setAntList(antList);
         configurationSetup.setColorMap(colors);
@@ -478,9 +486,75 @@ public class ConfigurationController {
         configurationSetup.setStepsLimit(configurationSetup.getStepsLimit() + currentSteps);
 
         configurationSetup.setComplete(true);
+        try {
+            setupAnimationWindow();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Chowa obecne okno i tworzy scenę animacji z pliku /application/gui/animation/animationGUI.fxml,
+     * w którym odtwarzana będzie symulacja stworzona według ustawień z instancji configurationSetup.
+     * Jeśli stworzone okno ma wielkość większą niż 3/4 ekranu użytkownika, maksymalizuje je.
+     * Po zamknięciu animacji, wywołuje void clearWindow()
+     * @throws IOException
+     */
+    private void setupAnimationWindow() throws IOException {
+        if (configurationSetup == null)
+            return;
+        if (!configurationSetup.isComplete())
+            return;
+
+        Stage animationStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass()
+                .getResource("/application/gui/animation/animationGUI.fxml"));
+        Parent animationRoot = fxmlLoader.load();
+
+        AnimationController animationController = fxmlLoader.getController();
+        animationController.setup(configurationSetup);
+        animationStage.setTitle("Langton's Ant");
+
+        int minimalSize = (configurationSetup.getPlane().getPlaneSize() * 5) + 100;
+        int sceneSize = (configurationSetup.getPlane().getPlaneSize() * configurationSetup.getAntSize()) + 100;
+
+        if(sceneSize < minimalSize)
+            sceneSize = minimalSize;
+
+        animationStage.setScene(new Scene(animationRoot, sceneSize, sceneSize));
+        animationStage.setOnCloseRequest(event -> onStageCloseRequest());
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        double availableHeight = screenBounds.getHeight() * 3 / 4;
+        if (availableHeight < sceneSize) {
+            animationStage.setMaximized(false);
+            animationStage.setMaximized(true);
+            animationStage.toFront();
+        }
 
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
+        animationStage.showAndWait();
+        clearWindow();
+        stage.show();
+    }
+
+    private void clearWindow() {
+        configurationSetup = new ConfigurationSetup();
+        configurationSetup.setCurrentSteps(0L);
+
+        antCount = 0;
+        locationsLoadFile = null;
+        gridPaneOne.getChildren().clear();
+        antTextFieldsMap = new LinkedHashMap<>();
+
+        okayButton.setDisable(true);
+        resetButton.setDisable(true);
+
+        resetBorderPaneRightChildren(false);
+        borderPane.setLeft(null);
+
+        shuffleQueue();
     }
 
 
@@ -498,7 +572,8 @@ public class ConfigurationController {
         }
     }
 
-    public ConfigurationSetup getConfigurationSetup() {
-        return configurationSetup;
+    private void onStageCloseRequest() {
+        Platform.exit();
+        System.exit(0);
     }
 }

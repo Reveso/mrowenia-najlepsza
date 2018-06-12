@@ -1,6 +1,6 @@
 package application.gui.animation;
 
-import application.langtonsant.Controller;
+import application.langtonsant.CoreType;
 import application.langtonsant.behaviourcore.BasicAntCore;
 import application.langtonsant.behaviourcore.CustomAntCore;
 import application.langtonsant.behaviourcore.SavableAntCore;
@@ -35,12 +35,27 @@ public class AnimationController {
     @FXML
     private Canvas animationCanvas;
 
+    /**
+     * Bieżąca ilość kroków animacji.
+     */
     private Long currentSteps;
-    private Controller controller;
+    /**
+     * Typ jądra animacji.
+     */
+    private CoreType coreType;
+    /**
+     * Bieżące jądro animacji.
+     */
     private SavableAntCore currentAntCore;
-
+    /**
+     * Timeline na którym odbywa się animacja.
+     */
     private Timeline timeline;
 
+    /**
+     * Ustawia animację zgodnie z danymi w instancji podanej jako parametr.
+     * @param configurationSetup Konfiguracja animacji.
+     */
     public void setup(ConfigurationSetup configurationSetup) {
 
         int refreshDelay = configurationSetup.getRefreshDelay();
@@ -49,15 +64,15 @@ public class AnimationController {
         Plane plane = configurationSetup.getPlane();
         Long stepsLimit = configurationSetup.getStepsLimit();
         currentSteps = configurationSetup.getCurrentSteps();
-        controller = configurationSetup.getController();
+        coreType = configurationSetup.getCoreType();
 
         animationCanvas.setHeight(plane.getPlaneSize()*configurationSetup.getAntSize());
         animationCanvas.setWidth(plane.getPlaneSize()*configurationSetup.getAntSize());
 
-        if (controller.equals(Controller.BASIC)) {
+        if (coreType.equals(CoreType.BASIC)) {
             currentAntCore = new BasicAntCore(plane, antList, colorMap,
                     animationCanvas.getGraphicsContext2D(), configurationSetup.getAntSize());
-        } else if (controller.equals(Controller.CUSTOM)) {
+        } else if (coreType.equals(CoreType.CUSTOM)) {
             currentAntCore = new CustomAntCore(plane, antList.get(0), colorMap,
                     animationCanvas.getGraphicsContext2D(), configurationSetup.getAntSize());
         }
@@ -84,6 +99,10 @@ public class AnimationController {
         stepCountTextField.setText("Steps: " + currentSteps);
     }
 
+    /**
+     * Handler dla akcji onAction przycisku pauseButton.
+     * Pauzuje/startuje animację.
+     */
     @FXML
     private void onPauseButtonAction() {
         if (pauseButton.getText().toLowerCase().equals("pause")) {
@@ -95,6 +114,13 @@ public class AnimationController {
         }
     }
 
+    /**
+     * Handler dla akcji onAction przycisku saveButton.
+     * Wyświetla FileChooser, gdzie użytkownik specyfikuje lokalizację zapisu.
+     * Nastepnie wywołuje saveCurrentAntCore(AbstractAntCore, File) dla właściwości
+     * klasy abstractAntCore, oraz wybranej lokacji.
+     * Jeśli animacja nie była zapauzowana, pauzuję animację.
+     */
     @FXML
     private void onSaveButtonMouseClicked() {
         timeline.pause();
@@ -114,6 +140,10 @@ public class AnimationController {
         pauseButton.setText("Play");
     }
 
+    /**
+     * Handler dla akcji onMouseClicked przycisku backButton.
+     * Stopuje timeline i zamyka stage.
+     */
     @FXML
     private void onBackButtonMouseClicked() {
         timeline.stop();
@@ -122,11 +152,16 @@ public class AnimationController {
         stage.close();
     }
 
+    /**
+     * Zapisuje jądro abstractAntCore w lokacji file.
+     * @param savableAntCore Jądro do zapisu.
+     * @param file Lokalizacja zapisu.
+     */
     private void saveCurrentAntCore(SavableAntCore savableAntCore, File file) {
 
         try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(
                 new FileOutputStream(file)))) {
-            locFile.writeObject(controller);
+            locFile.writeObject(coreType);
             locFile.writeObject(savableAntCore.getPlane());
             locFile.writeObject(savableAntCore.getAntList());
             locFile.writeObject(savableAntCore.getColorList());
