@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -24,12 +25,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -181,9 +181,9 @@ public class ConfigurationController {
         Stage stage = (Stage) borderPane.getScene().getWindow();
         stage.sizeToScene();
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        if (stage.getHeight() > (screenSize.height / 2)) {
-            stage.setHeight(screenSize.height / 2);
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+        if (stage.getHeight() > (screenSize.getHeight() / 2)) {
+            stage.setHeight(screenSize.getHeight() / 2);
         }
         antCount++;
     }
@@ -482,6 +482,7 @@ public class ConfigurationController {
         Stage stage = (Stage) gridPaneOne.getScene().getWindow();
         stage.close();
     }
+
 
     private void displayAlert(String title, String header) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
